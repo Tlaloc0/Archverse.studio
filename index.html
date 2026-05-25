@@ -1,0 +1,2695 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="ArchVerse crea maquetas virtuales interactivas para desarrolladores inmobiliarios e inmobiliarias. Vende antes de construir con recorridos 3D, orientación solar, buscador de unidades, amenidades y simulación financiera."/>
+<meta name="keywords" content="maquetas virtuales, maquetas virtuales inmobiliarias, recorridos 3D, visualización arquitectónica, desarrollos inmobiliarios, preventa inmobiliaria, renders interactivos, Unreal Engine arquitectura, archviz México, inmobiliarias México"/>
+<meta name="author" content="ArchVerse"/>
+<meta name="robots" content="index, follow"/>
+<meta property="og:title" content="ArchVerse | Maquetas virtuales interactivas para desarrollos inmobiliarios"/>
+<meta property="og:description" content="Vende antes de construir con experiencias inmobiliarias interactivas: recorridos 3D, orientación solar, buscador de unidades, amenidades y simulación financiera."/>
+<meta property="og:type" content="website"/>
+<meta property="og:locale" content="es_MX"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<title>ArchVerse | Maquetas virtuales interactivas para desarrollos inmobiliarios</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Syne+Mono&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --void:#05070d;
+  --acid:#7dd3fc;
+  --secondary:#a78bfa;
+  --accent:#60a5fa;
+  --gradient:linear-gradient(135deg,#7dd3fc 0%,#60a5fa 45%,#a78bfa 100%);
+  --white:#e6f0ff;
+  --muted:rgba(200,220,255,.38);
+  --line:rgba(200,220,255,.12);
+  --glass:rgba(125,211,252,.12);
+  --glow:0 0 24px rgba(125,211,252,.32),0 0 68px rgba(167,139,250,.18);
+}
+html,body{cursor:none;overflow-x:hidden;background:var(--void);}
+body{font-family:'Syne',sans-serif;color:var(--white);-webkit-font-smoothing:antialiased;}
+a{color:inherit;text-decoration:none;}
+img,video{display:block;width:100%;height:100%;object-fit:cover;}
+video{background:#05070d;}
+
+/* ── YOUTUBE IFRAMES ────────────────────── */
+.feat-img iframe{
+  position:absolute;
+  top:50%;left:50%;
+  width:178vh;height:100vh;
+  min-width:100%;min-height:56.25vw;
+  transform:translate(-50%,-50%);
+  border:0;pointer-events:none;
+  filter:brightness(.65);
+}
+.feat-img.active iframe{pointer-events:auto;}
+.fmob-video-box iframe{width:100%;height:100%;border:0;display:block;}
+
+/* ── CURSOR ─────────────────────────── */
+#cur{
+  position:fixed;pointer-events:none;z-index:9999;
+  width:14px;height:14px;border-radius:50%;
+  background:var(--gradient);
+  box-shadow:var(--glow);
+  transform:translate(-50%,-50%);
+  transition:width .25s,height .25s,border-radius .25s;
+  mix-blend-mode:difference;
+}
+#cur.big{width:80px;height:80px;}
+#cur-text{display:none!important;}
+#cur.big #cur-text{display:none!important;}
+
+/* ── LOADER ──────────────────────────── */
+#loader{
+  position:fixed;inset:0;z-index:8000;
+  background:var(--void);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:0;
+}
+.l-num{
+  font-size:clamp(80px,15vw,180px);
+  font-weight:800;line-height:1;
+  color:var(--acid);letter-spacing:-.04em;
+  font-variant-numeric:tabular-nums;
+}
+.l-label{
+  font-size:10px;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--muted);margin-top:8px;
+}
+.l-bar{
+  position:absolute;bottom:0;left:0;height:2px;
+  background:var(--acid);width:0%;transition:width .04s linear;
+}
+
+/* ── NAV ─────────────────────────────── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:400;
+  padding:28px 48px;
+  display:flex;align-items:center;justify-content:space-between;
+  mix-blend-mode:difference;
+}
+.logo{
+  font-size:14px;font-weight:700;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--white);
+}
+.nav-r{display:flex;align-items:center;gap:40px;}
+.nav-links{display:flex;gap:32px;list-style:none;}
+.nav-links a{
+  font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(255,255,255,.4);transition:color .2s;
+}
+.nav-links a:hover{color:#fff;}
+.nav-pill{
+  font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--void);background:var(--gradient);
+  box-shadow:0 12px 36px rgba(125,211,252,.22),0 0 42px rgba(167,139,250,.12);
+  padding:8px 18px;border-radius:100px;font-weight:700;
+  transition:opacity .2s;
+}
+.nav-pill:hover{opacity:.85;}
+
+/* ── WEBGL CANVAS ───────────────────── */
+#gl{
+  position:fixed;inset:0;z-index:0;
+  opacity:0;transition:opacity 1s;pointer-events:none;
+}
+#gl.vis{opacity:1;}
+
+/* ── SECTIONS ────────────────────────── */
+.section{
+  position:relative;z-index:10;
+  min-height:100vh;
+}
+
+/* ── HERO ─────────────────────────────── */
+#s-hero{
+  display:flex;flex-direction:column;
+  justify-content:flex-end;
+  padding:0 60px 80px;
+  overflow:hidden;
+}
+.hero-eyebrow{
+  font-family:'Syne Mono',monospace;
+  font-size:10px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--acid);margin-bottom:24px;
+  opacity:0;transform:translateY(12px);
+}
+.hero-h1{
+  font-size:clamp(64px,10vw,148px);
+  font-weight:800;line-height:.88;letter-spacing:-.04em;
+  color:var(--white);
+  max-width:14ch;
+}
+.word{display:inline-block;overflow:hidden;vertical-align:top;}
+.word-inner{display:block;transform:translateY(110%);}
+.hero-h1 em{color:var(--acid);font-style:normal;}
+.hero-bottom{
+  display:flex;align-items:flex-end;justify-content:space-between;
+  margin-top:60px;
+  opacity:0;
+}
+.hero-desc{
+  font-size:15px;font-weight:400;line-height:1.75;
+  color:var(--muted);max-width:38ch;
+}
+.hero-scroll-label{
+  font-family:'Syne Mono',monospace;
+  font-size:10px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:10px;
+}
+.scroll-ticker{
+  width:1px;height:56px;background:rgba(255,255,255,.15);
+  position:relative;overflow:hidden;
+}
+.scroll-ticker::after{
+  content:'';position:absolute;top:0;width:100%;height:40%;
+  background:var(--acid);
+  animation:sticker 2s ease-in-out infinite;
+}
+@keyframes sticker{
+  0%{transform:translateY(-100%);}
+  100%{transform:translateY(300%);}
+}
+
+/* ── MARQUEE ────────────────────────── */
+.marquee-wrap{
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  padding:18px 0;overflow:hidden;
+  position:relative;z-index:10;
+}
+.marquee-track{
+  display:flex;gap:0;
+  animation:mq 20s linear infinite;
+  white-space:nowrap;
+}
+@keyframes mq{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+.mq-item{
+  display:inline-flex;align-items:center;gap:40px;padding:0 40px;
+  font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--muted);flex-shrink:0;
+}
+.mq-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--acid);flex-shrink:0;
+}
+
+/* ── ABOUT / WHY ────────────────────── */
+#s-why{padding:160px 0;}
+.wrap{width:min(calc(100% - 64px),1400px);margin:0 auto;}
+
+.why-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:start;
+}
+.tag{
+  font-family:'Syne Mono',monospace;
+  font-size:10px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--acid);margin-bottom:32px;display:flex;align-items:center;gap:12px;
+}
+.tag::before{content:'';width:24px;height:1px;background:var(--acid);}
+.big-title{
+  font-size:clamp(40px,4.5vw,72px);
+  font-weight:700;line-height:.92;letter-spacing:-.04em;
+}
+.big-title em{color:var(--acid);font-style:normal;}
+.body-text{
+  font-size:16px;font-weight:400;line-height:1.85;
+  color:var(--muted);margin-top:32px;max-width:50ch;
+}
+.why-right{padding-top:48px;}
+.stat-row{
+  display:flex;align-items:baseline;gap:16px;
+  border-top:1px solid var(--line);padding:28px 0;
+}
+.stat-big{
+  font-size:clamp(48px,5vw,80px);font-weight:800;
+  line-height:1;letter-spacing:-.04em;color:var(--acid);
+  min-width:140px;
+}
+.stat-copy{font-size:14px;color:var(--muted);line-height:1.6;max-width:36ch;}
+.stat-copy strong{color:var(--white);font-weight:600;display:block;margin-bottom:4px;}
+
+
+/* ── FEATURE MEDIA STATES LIKE TEXT ───────────────── */
+.feat-img{
+  position:absolute;
+  inset:0;
+  opacity:0;
+  z-index:0;
+  pointer-events:none;
+  transform:translateY(120px) scale(.92);
+  filter:blur(10px);
+  transition:all .8s cubic-bezier(.23,1,.32,1);
+}
+.feat-img.media-prev{
+  opacity:.22;
+  transform:translateY(-210px) scale(.86);
+  filter:brightness(.40) blur(4px);
+}
+.feat-img.media-next{
+  opacity:.22;
+  transform:translateY(210px) scale(.86);
+  filter:brightness(.40) blur(4px);
+}
+.feat-img.active{
+  opacity:1;
+  z-index:3;
+  pointer-events:auto;
+  transform:translateY(0) scale(1);
+  filter:blur(0);
+}
+.feat-img video,
+.feat-img img{
+  transform:scale(1.04);
+  transition:transform .95s cubic-bezier(.23,1,.32,1);
+}
+.feat-img.active video,
+.feat-img.active img{
+  transform:scale(1);
+}
+
+
+/* ── FEATURE SCROLL ─────────────────── */
+#s-features{padding:0 0 120px;}
+
+.features-sticky{
+  display:grid;grid-template-columns:1fr 1fr;
+  min-height:100vh;position:relative;
+}
+.feat-left{
+  position:sticky;top:0;height:100vh;
+  overflow:hidden;
+}
+.feat-img-stack{position:relative;width:100%;height:100%;}
+
+.feat-img img,.feat-img video{height:100%;filter:brightness(.65);}
+.feat-img.active{
+  opacity:1;
+  z-index:3;
+  pointer-events:auto;
+  transform:translateY(0) scale(1);
+  filter:blur(0);
+}
+
+.feat-right{padding:100px 80px 100px 60px;}
+.feat-right{
+  padding:0 80px 0 60px;
+  min-height:100vh;
+  position:sticky;
+  top:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.feat-viewport{
+  width:100%;
+  min-height:560px;
+  position:relative;
+}
+.feat-item{
+  position:absolute;
+  left:0;
+  top:50%;
+  width:100%;
+  min-height:360px;
+  padding:56px 0 58px;
+  border-top:1px solid var(--line);
+  opacity:0;
+  transform:translateY(-50%) scale(.88);
+  transform-origin:left center;
+  pointer-events:none;
+  filter:blur(6px);
+  transition:
+    opacity .55s cubic-bezier(.23,1,.32,1),
+    transform .72s cubic-bezier(.23,1,.32,1),
+    filter .55s cubic-bezier(.23,1,.32,1);
+  will-change:transform,opacity,filter;
+}
+.feat-item.prev{
+  opacity:.22;
+  transform:translateY(calc(-50% - 260px)) scale(.82);
+  filter:blur(1px);
+}
+.feat-item.next{
+  opacity:.22;
+  transform:translateY(calc(-50% + 260px)) scale(.82);
+  filter:blur(1px);
+}
+.feat-item.active{
+  opacity:1;
+  transform:translateY(-50%) scale(1);
+  filter:blur(0);
+  pointer-events:auto;
+}
+.feat-item .feat-desc{
+  max-height:160px;
+  opacity:1;
+  transform:translateY(0);
+}
+.feat-item .feat-tag{
+  opacity:1;
+  transform:translateY(0) scale(1);
+}
+.feat-item.active .feat-title{
+  text-shadow:0 0 28px rgba(125,211,252,.22),0 0 54px rgba(167,139,250,.12);
+}
+.feat-num{
+  font-family:'Syne Mono',monospace;
+  font-size:10px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--acid);margin-bottom:20px;
+}
+.feat-title{
+  font-size:clamp(28px,2.8vw,44px);font-weight:700;
+  line-height:1;letter-spacing:-.03em;margin-bottom:16px;
+}
+.feat-desc{font-size:14px;color:var(--muted);line-height:1.8;max-width:44ch;}
+.feat-tag{
+  display:inline-flex;align-items:center;gap:6px;
+  margin-top:20px;
+  font-family:'Syne Mono',monospace;
+  font-size:9px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--void);background:var(--gradient);
+  box-shadow:0 12px 36px rgba(125,211,252,.22),0 0 42px rgba(167,139,250,.12);
+  padding:6px 12px;border-radius:100px;font-weight:700;
+}
+
+/* ── IMPACT FULLSCREEN ──────────────── */
+#s-impact{
+  background:
+    radial-gradient(circle at 25% 20%,rgba(255,255,255,.55),transparent 22%),
+    linear-gradient(135deg,#7dd3fc 0%,#60a5fa 42%,#a78bfa 100%);
+  padding:160px 0;
+  position:relative;overflow:hidden;
+}
+.impact-num-bg{
+  position:absolute;
+  font-size:clamp(200px,28vw,420px);
+  font-weight:800;line-height:1;letter-spacing:-.06em;
+  color:rgba(20,20,20,.08);
+  top:50%;left:50%;transform:translate(-50%,-50%);
+  white-space:nowrap;pointer-events:none;
+}
+.impact-inner{position:relative;z-index:1;text-align:center;}
+.impact-label{
+  font-family:'Syne Mono',monospace;
+  font-size:10px;letter-spacing:.28em;text-transform:uppercase;
+  color:rgba(20,20,20,.5);margin-bottom:32px;
+}
+.impact-title{
+  font-size:clamp(52px,8vw,120px);
+  font-weight:800;line-height:.88;letter-spacing:-.05em;
+  color:var(--void);margin-bottom:64px;
+}
+.impact-stats{
+  display:flex;justify-content:center;gap:0;
+  border-top:2px solid rgba(20,20,20,.15);
+  border-bottom:2px solid rgba(20,20,20,.15);
+}
+.imp-stat{
+  flex:1;max-width:280px;padding:48px 32px;
+  border-right:2px solid rgba(20,20,20,.15);
+}
+.imp-stat:last-child{border-right:none;}
+.imp-num{
+  font-size:clamp(38px,4.4vw,64px);font-weight:800;
+  letter-spacing:-.05em;color:var(--void);line-height:.95;
+  margin-bottom:14px;
+  display:flex;align-items:baseline;gap:8px;justify-content:center;
+  flex-wrap:wrap;
+}
+.imp-num .imp-unit{
+  font-family:'Syne',sans-serif;
+  font-size:.42em;
+  font-weight:800;
+  letter-spacing:-.04em;
+  text-transform:none;
+  color:var(--void);
+  white-space:nowrap;
+  line-height:.95;
+}
+.imp-num.imp-num-stack{flex-direction:column;align-items:center;gap:4px;line-height:.95;}
+.imp-num.imp-num-stack .imp-unit{font-size:.55em;}
+.imp-label{font-size:12px;color:rgba(20,20,20,.55);line-height:1.5;font-weight:500;}
+
+/* ── CASE STUDY ─────────────────────── */
+#s-case{padding:160px 0;}
+.case-head{margin-bottom:80px;}
+.case-big{
+  font-size:clamp(48px,6vw,96px);
+  font-weight:800;line-height:.9;letter-spacing:-.05em;
+}
+.case-big em{color:var(--acid);font-style:normal;}
+
+.case-layout{
+  display:grid;grid-template-columns:7fr 5fr;
+  gap:3px;min-height:640px;
+}
+.case-photo{position:relative;overflow:hidden;min-height:500px;}
+.case-photo img,.case-photo video{height:115%;filter:brightness(.6);transform:translateY(0);will-change:transform;}
+.case-photo video{position:absolute;inset:0;width:100%;height:115%;object-fit:cover;}
+.case-photo-overlay{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:48px;
+  background:linear-gradient(to top,rgba(0,0,0,.8),transparent);
+}
+.case-quote{
+  font-size:clamp(17px,1.8vw,22px);font-weight:400;line-height:1.55;
+  color:rgba(255,255,255,.8);max-width:52ch;font-style:italic;
+}
+.case-data{
+  background:#1e1e1e;
+  padding:56px 48px;
+  display:flex;flex-direction:column;justify-content:space-between;
+}
+.case-data > div:first-child{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+}
+.case-results{flex:1;justify-content:space-between;}
+.case-results .c-row{flex:1;align-items:center;}
+.case-tag-label{
+  font-family:'Syne Mono',monospace;
+  font-size:9px;letter-spacing:.26em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:32px;
+}
+.case-results{display:flex;flex-direction:column;gap:0;}
+.c-row{
+  border-top:1px solid var(--line);padding:24px 0;
+  display:flex;align-items:baseline;gap:14px;
+}
+.c-num{
+  font-size:clamp(36px,3.5vw,52px);font-weight:800;
+  letter-spacing:-.04em;color:var(--acid);min-width:90px;
+}
+.c-label{font-size:13px;color:var(--muted);line-height:1.6;}
+.case-cta{
+  display:inline-flex;align-items:center;gap:10px;
+  margin-top:40px;
+  font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--void);background:var(--gradient);
+  box-shadow:0 12px 36px rgba(125,211,252,.22),0 0 42px rgba(167,139,250,.12);
+  padding:14px 28px;border-radius:100px;font-weight:700;
+  transition:opacity .2s;align-self:flex-start;
+}
+.case-cta:hover{opacity:.85;}
+.arr{width:14px;height:14px;transition:transform .3s;}
+.case-cta:hover .arr{transform:translate(3px,-3px);}
+
+
+/* ── MODULE LENS (magnifier) ───────────────── */
+.mod-lens{
+  position:fixed;
+  top:0;left:0;
+  width:300px;
+  height:210px;
+  border-radius:22px;
+  overflow:hidden;
+  pointer-events:none;
+  z-index:5000;
+  opacity:0;
+  transform:translate(-50%,-50%) scale(.65) rotate(-4deg);
+  transition:opacity .42s cubic-bezier(.23,1,.32,1),transform .65s cubic-bezier(.18,1.2,.35,1);
+  box-shadow:
+    0 30px 100px rgba(0,0,0,.65),
+    0 0 0 1px rgba(125,211,252,.45),
+    0 0 80px rgba(125,211,252,.30),
+    inset 0 1px 0 rgba(255,255,255,.18);
+  background:#05070d;
+  will-change:transform,opacity;
+}
+.mod-lens.is-on{
+  opacity:1;
+  transform:translate(-50%,-50%) scale(1) rotate(0deg);
+}
+.mod-lens-img{
+  position:absolute;inset:0;
+  background-size:cover;
+  background-position:center;
+  transform:scale(1.1);
+  transition:transform .8s cubic-bezier(.23,1,.32,1),background-image .25s ease;
+  filter:saturate(1.08) contrast(1.04);
+}
+.mod-lens.is-on .mod-lens-img{transform:scale(1);}
+.mod-lens::before{
+  content:'';
+  position:absolute;inset:0;
+  background:
+    radial-gradient(circle at 28% 24%,rgba(255,255,255,.22),transparent 55%),
+    linear-gradient(180deg,transparent 40%,rgba(5,7,13,.86) 100%);
+  pointer-events:none;
+  z-index:1;
+}
+.mod-lens-meta{
+  position:absolute;left:16px;right:16px;bottom:14px;
+  display:flex;align-items:flex-end;justify-content:space-between;gap:12px;
+  z-index:2;
+}
+.mod-lens-name{
+  font-size:13px;font-weight:700;letter-spacing:-.01em;
+  color:#fff;
+  text-shadow:0 2px 14px rgba(0,0,0,.7);
+  line-height:1.1;
+}
+.mod-lens-num{
+  font-family:'Syne Mono',monospace;
+  font-size:9px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--acid);
+  text-shadow:0 0 12px rgba(125,211,252,.6);
+}
+.mod-lens-ring{
+  position:absolute;top:14px;right:14px;
+  width:34px;height:34px;border-radius:50%;
+  border:1.5px solid rgba(255,255,255,.65);
+  z-index:2;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(5,7,13,.35);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+}
+.mod-lens-ring::after{
+  content:'';
+  width:14px;height:14px;border-radius:50%;
+  border:1.5px solid rgba(255,255,255,.85);
+  position:absolute;
+  top:6px;left:6px;
+}
+.mod-lens-ring::before{
+  content:'';
+  position:absolute;
+  width:8px;height:1.5px;
+  background:rgba(255,255,255,.85);
+  bottom:8px;right:6px;
+  transform:rotate(45deg);
+  transform-origin:right center;
+}
+@media(hover:none),(pointer:coarse){
+  .mod-lens{display:none!important;}
+}
+
+/* ── CARD BG IMAGE (photo on hover / always-on mobile) ─── */
+.mod-card-photo{
+  position:absolute;
+  inset:0;
+  background-size:cover;
+  background-position:center;
+  opacity:0;
+  transform:scale(1.18);
+  filter:saturate(.7) brightness(.45) blur(3px);
+  transition:opacity .65s cubic-bezier(.23,1,.32,1),transform 1.1s cubic-bezier(.23,1,.32,1),filter .65s ease;
+  z-index:0;
+  pointer-events:none;
+  border-radius:inherit;
+}
+.mod-card-photo::after{
+  content:'';
+  position:absolute;inset:0;
+  background:linear-gradient(165deg,rgba(5,7,13,.45) 0%,rgba(5,7,13,.78) 60%,rgba(5,7,13,.92) 100%);
+}
+.mod-card:hover .mod-card-photo{
+  opacity:.75;
+  transform:scale(1.05);
+  filter:saturate(1) brightness(.6) blur(0);
+}
+.mod-card-video{
+  position:absolute;inset:0;
+  opacity:0;z-index:0;overflow:hidden;
+  border-radius:inherit;pointer-events:none;
+  transform:scale(1.18);
+  filter:saturate(.7) brightness(.45) blur(3px);
+  transition:opacity .65s cubic-bezier(.23,1,.32,1),transform 1.1s cubic-bezier(.23,1,.32,1),filter .65s ease;
+}
+.mod-card-video::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(165deg,rgba(5,7,13,.45) 0%,rgba(5,7,13,.78) 60%,rgba(5,7,13,.92) 100%);
+  z-index:1;
+}
+.mod-card:hover .mod-card-video{
+  opacity:.75;transform:scale(1.05);
+  filter:saturate(1) brightness(.6) blur(0);
+}
+.mod-card-video iframe{
+  position:absolute;top:50%;left:50%;
+  width:160%;height:160%;
+  transform:translate(-50%,-50%);
+  border:0;pointer-events:none;
+}
+
+/* ── MODULES GRID / PREMIUM ORBIT CARDS ───────────────────── */
+#s-modules{
+  padding:150px 0;
+  overflow:hidden;
+}
+#s-modules::before{
+  content:'';
+  position:absolute;
+  width:720px;
+  height:720px;
+  right:-260px;
+  top:120px;
+  background:radial-gradient(circle,rgba(125,211,252,.12),transparent 62%);
+  filter:blur(18px);
+  pointer-events:none;
+}
+#s-modules::after{
+  content:'09';
+  position:absolute;
+  right:5vw;
+  top:7vh;
+  font-size:clamp(160px,18vw,300px);
+  font-weight:800;
+  letter-spacing:-.08em;
+  color:rgba(125,211,252,.035);
+  pointer-events:none;
+}
+.mod-intro{
+  display:grid;
+  grid-template-columns:1.1fr .9fr;
+  gap:80px;
+  align-items:end;
+  margin-bottom:76px;
+}
+.mod-sub{
+  font-size:15px;
+  color:var(--muted);
+  max-width:42ch;
+  line-height:1.8;
+}
+.mod-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+  perspective:1200px;
+}
+.mod-card{
+  --x:50%;
+  --y:50%;
+  min-height:245px;
+  background:
+    radial-gradient(circle at var(--x) var(--y),rgba(125,211,252,.16),transparent 34%),
+    linear-gradient(180deg,rgba(230,240,255,.07),rgba(125,211,252,.025));
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  padding:42px 36px;
+  position:relative;
+  overflow:hidden;
+  border:1px solid rgba(230,240,255,.08);
+  border-radius:26px;
+  transition:
+    transform .45s cubic-bezier(.23,1,.32,1),
+    border-color .35s ease,
+    background .35s ease,
+    box-shadow .35s ease;
+  transform-style:preserve-3d;
+}
+.mod-card:nth-child(3n+2){transform:translateY(34px);}
+.mod-card:nth-child(3n){transform:translateY(10px);}
+.mod-card::before{
+  content:'';
+  position:absolute;
+  inset:1px;
+  border-radius:24px;
+  background:
+    linear-gradient(135deg,rgba(255,255,255,.08),transparent 30%),
+    radial-gradient(circle at var(--x) var(--y),rgba(167,139,250,.20),transparent 36%);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .35s ease;
+  z-index:0;
+}
+.mod-card::after{
+  content:'';
+  position:absolute;
+  inset:-1px;
+  border-radius:26px;
+  padding:1px;
+  background:linear-gradient(135deg,rgba(125,211,252,.55),rgba(167,139,250,.35),transparent 58%);
+  opacity:0;
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;
+  mask-composite:exclude;
+  pointer-events:none;
+  transition:opacity .35s ease;
+}
+.mod-card:hover{
+  transform:translateY(-10px) rotateX(2deg) rotateY(-2deg) scale(1.015);
+  border-color:rgba(125,211,252,.32);
+  box-shadow:0 24px 80px rgba(0,0,0,.32),0 0 55px rgba(125,211,252,.10);
+}
+.mod-card:nth-child(3n+2):hover{transform:translateY(20px) rotateX(2deg) rotateY(-2deg) scale(1.015);}
+.mod-card:nth-child(3n):hover{transform:translateY(-2px) rotateX(2deg) rotateY(-2deg) scale(1.015);}
+.mod-card:hover::before{opacity:1;}
+.mod-card:hover::after{opacity:1;}
+.mod-card > *{
+  position:relative;
+  z-index:1;
+}
+.mod-n{
+  font-family:'Syne Mono',monospace;
+  font-size:9px;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:rgba(125,211,252,.72);
+  margin-bottom:34px;
+}
+.mod-icon{
+  font-size:25px;
+  margin-bottom:18px;
+  display:inline-flex;
+  width:48px;
+  height:48px;
+  align-items:center;
+  justify-content:center;
+  border-radius:18px;
+  background:rgba(230,240,255,.055);
+  border:1px solid rgba(230,240,255,.08);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
+  transition:
+    transform .42s cubic-bezier(.23,1,.32,1),
+    background .35s ease,
+    box-shadow .35s ease;
+}
+.mod-card:hover .mod-icon{
+  transform:translateY(-6px) scale(1.12) rotate(5deg);
+  background:rgba(125,211,252,.12);
+  box-shadow:0 0 26px rgba(125,211,252,.18),inset 0 1px 0 rgba(255,255,255,.18);
+}
+.mod-name{
+  font-size:22px;
+  font-weight:700;
+  letter-spacing:-.03em;
+  margin-bottom:12px;
+  color:var(--white);
+  transition:text-shadow .35s ease,transform .35s ease;
+}
+.mod-card:hover .mod-name{
+  text-shadow:0 0 20px rgba(125,211,252,.24);
+  transform:translateX(2px);
+}
+.mod-desc{
+  font-size:13.5px;
+  color:rgba(200,220,255,.46);
+  line-height:1.78;
+  max-width:38ch;
+}
+.mod-card .mod-orbit{
+  position:absolute;
+  right:26px;
+  top:26px;
+  width:54px;
+  height:54px;
+  border:1px solid rgba(125,211,252,.14);
+  border-radius:50%;
+  opacity:.45;
+  pointer-events:none;
+}
+.mod-card .mod-orbit::before{
+  content:'';
+  position:absolute;
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:var(--acid);
+  top:7px;
+  left:50%;
+  box-shadow:0 0 16px rgba(125,211,252,.65);
+  animation:moduleOrbit 5.8s linear infinite;
+  transform-origin:0 20px;
+}
+@keyframes moduleOrbit{
+  from{transform:rotate(0deg);}
+  to{transform:rotate(360deg);}
+}
+
+/* ── CTA FINAL ──────────────────────── */
+
+#s-cta{
+  padding:160px 0;text-align:center;
+  border-top:1px solid var(--line);
+  position:relative;overflow:hidden;
+}
+.cta-glyph{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  font-size:clamp(160px,24vw,360px);
+  font-weight:800;letter-spacing:-.06em;
+  color:rgba(125,211,252,.06);
+  pointer-events:none;white-space:nowrap;
+}
+.cta-mono{
+  font-family:'Syne Mono',monospace;
+  font-size:10px;letter-spacing:.28em;text-transform:uppercase;
+  color:var(--acid);margin-bottom:32px;
+}
+.cta-h{
+  font-size:clamp(52px,7.5vw,120px);
+  font-weight:800;line-height:.88;letter-spacing:-.05em;
+  margin-bottom:48px;
+}
+.cta-h em{color:var(--acid);font-style:normal;}
+.cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+.btn-acid{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:16px 36px;border-radius:100px;
+  font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  background:var(--gradient);
+  box-shadow:0 12px 36px rgba(125,211,252,.22),0 0 42px rgba(167,139,250,.12);color:var(--void);
+  transition:opacity .2s;
+}
+.btn-acid:hover{opacity:.85;}
+.btn-ghost{
+  border:1px solid rgba(240,236,228,.2);color:var(--white);
+}
+.btn-ghost:hover{background:rgba(240,236,228,.06);}
+
+
+/* ── SEO ACCESSIBLE CONTENT ───────────────── */
+.sr-seo{
+  position:absolute;
+  width:1px;
+  height:1px;
+  padding:0;
+  margin:-1px;
+  overflow:hidden;
+  clip:rect(0,0,0,0);
+  white-space:nowrap;
+  border:0;
+}
+.seo-block{
+  padding:96px 0 120px;
+  border-top:1px solid var(--line);
+}
+.seo-content{
+  max-width:920px;
+  margin:0 auto;
+  color:rgba(200,220,255,.48);
+}
+.seo-content h2{
+  font-size:clamp(28px,3.4vw,52px);
+  line-height:1;
+  letter-spacing:-.04em;
+  color:var(--white);
+  margin-bottom:28px;
+}
+.seo-content h2 em{
+  color:var(--acid);
+  font-style:normal;
+}
+.seo-content p{
+  font-size:14px;
+  line-height:1.85;
+  margin-bottom:18px;
+}
+.seo-keywords{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:30px;
+}
+.seo-keywords span{
+  font-family:'Syne Mono',monospace;
+  font-size:9px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:rgba(230,240,255,.58);
+  border:1px solid rgba(230,240,255,.12);
+  background:rgba(230,240,255,.04);
+  padding:8px 12px;
+  border-radius:100px;
+}
+@media(max-width:900px){
+  .seo-block{padding:72px 0 90px;}
+  .seo-content p{font-size:13.5px;}
+}
+
+
+
+
+/* ── SEO STRIP ───────────────── */
+.seo-strip{
+  position:relative;
+  z-index:12;
+  width:100%;
+  padding:18px 0;
+  margin:0;
+  min-height:auto!important;
+  border-top:1px solid rgba(200,220,255,.055);
+  border-bottom:1px solid rgba(200,220,255,.055);
+  background:linear-gradient(90deg,rgba(125,211,252,.018),rgba(167,139,250,.028),rgba(125,211,252,.018));
+  overflow:hidden;
+}
+.seo-strip-inner{
+  width:max-content;
+  display:flex;
+  gap:34px;
+  align-items:center;
+  white-space:nowrap;
+  font-family:'Syne Mono',monospace;
+  font-size:9px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:rgba(200,220,255,.42);
+  opacity:.72;
+  animation:seoMarquee 42s linear infinite;
+}
+.seo-strip-inner span{
+  display:inline-flex;
+  align-items:center;
+  gap:34px;
+}
+.seo-strip-inner span::after{
+  content:'·';
+  color:rgba(125,211,252,.55);
+}
+@keyframes seoMarquee{
+  from{transform:translateX(0);}
+  to{transform:translateX(-50%);}
+}
+@media(max-width:900px){
+  .seo-strip{padding:14px 0;}
+  .seo-strip-inner{font-size:8px;letter-spacing:.14em;animation-duration:34s;}
+}
+
+
+/* ── FOOTER ──────────────────────────── */
+footer{
+  border-top:1px solid var(--line);
+  padding:40px 0;
+}
+.foot-inner{
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:20px;
+}
+.foot-logo{
+  font-size:13px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(255,255,255,.3);
+}
+.foot-contact{
+  display:flex;gap:28px;
+}
+.foot-link{
+  font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  color:rgba(255,255,255,.25);
+  border-bottom:1px solid rgba(255,255,255,.1);
+  padding-bottom:2px;transition:color .2s,border-color .2s;
+}
+.foot-link:hover{color:var(--acid);border-color:var(--acid);}
+.foot-copy{font-size:10px;color:rgba(255,255,255,.18);letter-spacing:.08em;}
+
+/* ── REVEAL ──────────────────────────── */
+.js-up{opacity:0;transform:translateY(40px);}
+.js-fade{opacity:0;}
+
+
+/* ── ARCHVERSE BLUE/VIOLET GLASS ACCENTS ───────────────── */
+.hero-h1 em,.big-title em,.case-big em,.cta-h em,.stat-big,.c-num,.cta-mono,.hero-eyebrow,.tag,.feat-num{
+  text-shadow:0 0 18px rgba(125,211,252,.32),0 0 38px rgba(167,139,250,.16);
+}
+.nav-pill,.btn-acid,.case-cta,.feat-tag{
+  border:1px solid rgba(230,240,255,.22);
+}
+.mod-card{
+  background:linear-gradient(180deg,rgba(230,240,255,.045),rgba(125,211,252,.025));
+  backdrop-filter:blur(12px);
+}
+.mod-card:hover{
+  background:linear-gradient(180deg,rgba(125,211,252,.11),rgba(167,139,250,.075));
+}
+.case-data{
+  background:linear-gradient(180deg,rgba(230,240,255,.06),rgba(125,211,252,.035));
+  backdrop-filter:blur(14px);
+}
+
+
+/* ── APPOINTMENT MODAL ───────────────────── */
+.appointment-modal{
+  position:fixed;
+  inset:0;
+  z-index:9000;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  background:rgba(5,7,13,.72);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+}
+.appointment-modal.is-open{display:flex;}
+.appointment-dialog{
+  width:min(1100px,100%);
+  height:min(760px,88vh);
+  border:1px solid rgba(230,240,255,.18);
+  border-radius:30px;
+  overflow:hidden;
+  background:linear-gradient(180deg,rgba(230,240,255,.09),rgba(125,211,252,.04));
+  box-shadow:0 24px 80px rgba(0,0,0,.42),0 0 60px rgba(125,211,252,.12);
+  position:relative;
+}
+.appointment-head{
+  height:64px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 22px;
+  border-bottom:1px solid rgba(230,240,255,.12);
+  background:rgba(5,7,13,.72);
+}
+.appointment-title{
+  font-size:11px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--white);
+  font-family:'Syne Mono',monospace;
+}
+.appointment-close{
+  appearance:none;
+  border:1px solid rgba(230,240,255,.2);
+  background:rgba(230,240,255,.06);
+  color:var(--white);
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  font-size:22px;
+  line-height:1;
+  cursor:pointer;
+  transition:background .2s, transform .2s;
+}
+.appointment-close:hover{
+  background:rgba(125,211,252,.16);
+  transform:scale(.96);
+}
+.appointment-frame{
+  width:100%;
+  height:calc(100% - 64px);
+  border:0;
+  background:#fff;
+}
+.appointment-fallback{
+  display:none;
+  padding:18px 22px;
+  font-size:12px;
+  color:var(--muted);
+  border-top:1px solid rgba(230,240,255,.12);
+}
+.appointment-fallback a{
+  color:var(--acid);
+  border-bottom:1px solid var(--acid);
+}
+@media(max-width:700px){
+  .appointment-modal{padding:12px;}
+  .appointment-dialog{height:88svh;border-radius:22px;}
+  .appointment-head{height:58px;padding:0 16px;}
+  .appointment-title{font-size:9px;}
+  .appointment-frame{height:calc(100% - 58px);}
+}
+
+
+/* ── RESPONSIVE ──────────────────────── */
+@media(max-width:900px){
+  .why-grid,.features-sticky,.case-layout,.mod-grid{grid-template-columns:1fr;}
+  .mod-grid{grid-template-columns:1fr 1fr;}
+  .impact-stats{flex-wrap:wrap;}
+  nav{padding:20px 24px;}
+  .nav-links{display:none;}
+  #s-hero{padding:0 24px 64px;}
+  .wrap{width:calc(100% - 32px);}
+  .feat-left{display:none;}
+  .feat-right{padding:60px 0;}
+}
+
+
+/* ── LANGUAGE TOGGLE + MOBILE POLISH ───────────────── */
+.lang-toggle{
+  border:1px solid rgba(230,240,255,.22);
+  background:rgba(230,240,255,.06);
+  color:var(--white);
+  padding:8px 14px;
+  border-radius:100px;
+  font-size:10px;
+  letter-spacing:.16em;
+  font-family:'Syne Mono',monospace;
+  cursor:pointer;
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  transition:background .25s,border-color .25s,transform .25s;
+}
+.lang-toggle:hover{background:rgba(125,211,252,.14);border-color:rgba(125,211,252,.45);transform:translateY(-1px);}
+
+@media (hover:none), (pointer:coarse){
+  html,body{cursor:auto;}
+  #cur{display:none;}
+  a,button{cursor:pointer;}
+}
+
+@media(max-width:900px){
+  body{overflow-x:hidden;}
+  nav{
+    padding:16px 16px;
+    mix-blend-mode:normal;
+    background:linear-gradient(to bottom,rgba(5,7,13,.78),rgba(5,7,13,.22));
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+  }
+  .logo{font-size:12px;letter-spacing:.16em;}
+  .nav-r{gap:8px;}
+  .nav-pill{padding:8px 12px;font-size:9px;}
+  .lang-toggle{padding:8px 11px;font-size:9px;}
+
+  #s-hero{
+    min-height:100svh;
+    padding:96px 20px 44px;
+    justify-content:flex-end;
+  }
+  .hero-eyebrow{font-size:9px;letter-spacing:.18em;margin-bottom:18px;}
+  .hero-h1{font-size:clamp(48px,17vw,76px);line-height:.88;max-width:10ch;}
+  .hero-bottom{margin-top:36px;align-items:flex-start;gap:28px;}
+  .hero-desc{font-size:14px;line-height:1.65;max-width:28ch;}
+  .hero-scroll-label{display:none;}
+
+  .marquee-wrap{padding:14px 0;}
+  .mq-item{font-size:9px;gap:24px;padding:0 24px;}
+
+  #s-why,#s-case,#s-modules,#s-cta{padding:84px 0;}
+  .wrap{width:calc(100% - 32px);}
+  .big-title,.case-big,.cta-h{letter-spacing:-.045em;}
+  .body-text{font-size:14px;line-height:1.75;}
+  .why-right{padding-top:20px;}
+  .stat-row{padding:22px 0;gap:12px;}
+  .stat-big{min-width:96px;font-size:44px;}
+  .stat-copy{font-size:13px;}
+
+  #s-features{padding:34px 0 70px;}
+  #s-features.section{min-height:auto!important;}
+  .features-sticky{display:block;min-height:auto!important;}
+  .feat-left{display:none!important;}
+  .feat-right{padding:0 16px;display:block;position:relative;min-height:auto!important;}
+  .feat-viewport{min-height:auto!important;position:relative;height:auto!important;}
+  .feat-item,
+  .feat-item.prev,
+  .feat-item.next,
+  .feat-item.active{
+    position:relative!important;
+    top:auto!important;
+    left:auto!important;
+    opacity:1!important;
+    padding:28px 0;
+    min-height:auto!important;
+    height:auto!important;
+    border-top:1px solid var(--line);
+    transform:none!important;
+    filter:none!important;
+    overflow:visible;
+    pointer-events:auto;
+  }
+  .feat-item .feat-desc{max-height:none;opacity:1;transform:none;}
+  .feat-item .feat-tag{opacity:1;transform:none;}
+  .feat-title{font-size:clamp(26px,8vw,38px);}
+  .feat-desc{font-size:13.5px;max-width:none;}
+
+  #s-impact{padding:84px 0;}
+  .impact-title{font-size:clamp(44px,13vw,72px);margin-bottom:36px;}
+  .impact-num-bg{font-size:42vw;opacity:.7;}
+  .impact-stats{display:grid;grid-template-columns:1fr 1fr;border-width:1px;}
+  .imp-stat{padding:28px 14px;border-right:1px solid rgba(20,20,20,.15);border-bottom:1px solid rgba(20,20,20,.15);}
+  .imp-stat:nth-child(2n){border-right:none;}
+  .imp-stat:nth-last-child(-n+2){border-bottom:none;}
+  .imp-num{font-size:38px;gap:6px;}
+  .imp-num .imp-unit{font-size:.34em;}
+  .imp-label{font-size:11px;}
+
+  .case-head{margin-bottom:42px;}
+  .case-layout{min-height:auto;gap:0;}
+  .case-photo{min-height:360px;border-radius:26px 26px 0 0;}
+  .case-photo-overlay{padding:28px;background:linear-gradient(to top,rgba(0,0,0,.84),rgba(0,0,0,.08));}
+  .case-quote{font-size:15px;}
+  .case-data{padding:34px 24px;border-radius:0 0 26px 26px;}
+  .case-cta{width:100%;justify-content:center;margin-top:32px;}
+
+  .mod-intro{display:block;margin-bottom:38px;}
+  .mod-sub{margin-top:20px;font-size:13.5px;}
+  .mod-grid{grid-template-columns:1fr;gap:10px;}
+  .mod-card{border-radius:24px;padding:30px 24px;background:rgba(230,240,255,.055);border-color:rgba(230,240,255,.08);}
+
+  .cta-glyph{font-size:48vw;}
+  .cta-row{gap:10px;}
+  .btn-acid{width:100%;justify-content:center;padding:15px 26px;}
+  .btn-ghost{background:rgba(230,240,255,.04);}
+
+  .foot-inner{display:block;text-align:left;}
+  .foot-contact{display:grid;grid-template-columns:1fr;gap:14px;margin:24px 0;}
+  .foot-link{font-size:11px;display:inline-block;width:max-content;}
+}
+
+@media(max-width:520px){
+  .hero-h1{font-size:clamp(44px,18vw,64px);}
+  .hero-bottom{display:block;}
+  .hero-desc{max-width:100%;}
+  .stat-row{display:block;}
+  .stat-big{margin-bottom:10px;}
+  .impact-stats{grid-template-columns:1fr;}
+  .imp-stat,.imp-stat:nth-child(2n){border-right:none;border-bottom:1px solid rgba(20,20,20,.15);}
+  .imp-stat:last-child{border-bottom:none;}
+}
+
+
+@media(max-width:900px){
+  #s-modules::after,#s-modules::before{display:none;}
+  .mod-intro{display:block;margin-bottom:38px;}
+  .mod-grid{grid-template-columns:1fr;gap:12px;}
+  .mod-card,.mod-card:nth-child(3n+2),.mod-card:nth-child(3n){
+    transform:none;
+    min-height:auto;
+    border-radius:24px;
+    padding:30px 24px;
+  }
+  .mod-card:hover,.mod-card:nth-child(3n+2):hover,.mod-card:nth-child(3n):hover{
+    transform:translateY(-4px);
+  }
+}
+
+
+/* ── MOBILE VIDEO CARDS (hidden on desktop) ────────── */
+.feat-mobile-video{ display:none; }
+.feat-mobile-header{ display:none; }
+
+/* Desktop: hide the mobile-only section */
+#s-features-mobile{ display:none; }
+
+/* ── MOBILE FEATURES SECTION (clean, no GSAP interference) ── */
+@media(max-width:900px){
+  /* Hide the complex desktop section entirely */
+  #s-features{ display:none!important; }
+
+  /* Show the clean mobile section */
+  #s-features-mobile{
+    display:block;
+    position:relative;
+    z-index:10;
+    padding:60px 0 40px;
+  }
+
+  .fmob-wrap{
+    width:calc(100% - 32px);
+    margin:0 auto;
+  }
+
+  .fmob-header{
+    font-family:'Syne Mono',monospace;
+    font-size:9px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--acid);
+    margin-bottom:40px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .fmob-header::before{
+    content:'';
+    width:24px;
+    height:1px;
+    background:var(--acid);
+  }
+
+  .fmob-card{
+    border-top:1px solid var(--line);
+    padding:32px 0 8px;
+  }
+
+  .fmob-video-box{
+    width:100%;
+    aspect-ratio:16/9;
+    border-radius:18px;
+    overflow:hidden;
+    margin-bottom:24px;
+    background:rgba(5,7,13,.8);
+    border:1px solid rgba(125,211,252,.14);
+    box-shadow:0 8px 40px rgba(0,0,0,.4);
+  }
+
+  .fmob-video-box video{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
+
+  .fmob-num{
+    font-family:'Syne Mono',monospace;
+    font-size:10px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--acid);
+    margin-bottom:12px;
+  }
+
+  .fmob-title{
+    font-size:clamp(24px,7vw,36px);
+    font-weight:700;
+    line-height:1.05;
+    letter-spacing:-.03em;
+    margin-bottom:12px;
+    color:var(--white);
+  }
+
+  .fmob-desc{
+    font-size:14px;
+    color:var(--muted);
+    line-height:1.75;
+    margin-bottom:16px;
+  }
+
+  .fmob-tag{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-family:'Syne Mono',monospace;
+    font-size:9px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--void);
+    background:var(--gradient);
+    padding:6px 12px;
+    border-radius:100px;
+    font-weight:700;
+    margin-bottom:32px;
+  }
+}
+
+@media(max-width:900px){
+  .feat-mobile-video{
+    display:block;
+    width:100%;
+    border-radius:20px;
+    overflow:hidden;
+    margin-bottom:24px;
+    aspect-ratio:16/9;
+    position:relative;
+    background:rgba(5,7,13,.6);
+    border:1px solid rgba(125,211,252,.12);
+    box-shadow:0 8px 40px rgba(0,0,0,.35),0 0 0 1px rgba(125,211,252,.06);
+  }
+  .feat-mobile-video video{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+    border-radius:20px;
+  }
+  /* Mobile section header */
+  .feat-mobile-header{
+    display:block;
+    padding:52px 16px 0;
+    font-family:'Syne Mono',monospace;
+    font-size:9px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--acid);
+    margin-bottom:0;
+  }
+  #s-features{
+    padding-top:0;
+  }
+}
+
+/* ── MOBILE OVERFLOW FIX / ARCHVERSE ───────────────── */
+html, body{
+  max-width:100%;
+  overflow-x:hidden!important;
+}
+
+@media(max-width:900px){
+  *, *::before, *::after{
+    max-width:100%;
+  }
+
+  .section{min-height:auto;}
+
+  nav{
+    max-width:100vw;
+    overflow:hidden;
+  }
+
+  .nav-r{
+    gap:8px;
+    min-width:0;
+  }
+
+  .nav-pill{
+    max-width:132px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    padding:8px 11px;
+    font-size:8px;
+    letter-spacing:.11em;
+  }
+
+  .lang-toggle{flex:0 0 auto;}
+
+  .logo{
+    max-width:120px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  .hero-h1,
+  .big-title,
+  .case-big,
+  .impact-title,
+  .cta-h{
+    overflow-wrap:break-word;
+    word-break:normal;
+    hyphens:auto;
+  }
+
+  .hero-h1{
+    max-width:100%;
+    font-size:clamp(42px,16vw,66px);
+  }
+
+  .word,
+  .word-inner{
+    max-width:100%;
+  }
+
+  .hero-bottom,
+  .hero-desc{
+    width:100%;
+    max-width:100%;
+  }
+
+  .seo-strip,
+  .marquee-wrap{
+    max-width:100vw;
+    overflow:hidden;
+  }
+
+  .mq-item{
+    padding:0 18px;
+    gap:20px;
+    font-size:8px;
+    letter-spacing:.14em;
+  }
+
+  .why-grid,
+  .case-layout,
+  .mod-intro,
+  .features-sticky{
+    width:100%;
+    max-width:100%;
+  }
+
+  .stat-row,
+  .impact-stats,
+  .case-photo,
+  .case-data,
+  .cta-row{
+    width:100%;
+    max-width:100%;
+  }
+
+  .stat-copy,
+  .case-quote{
+    max-width:100%;
+  }
+
+  .imp-stat{max-width:none;}
+
+  #s-modules{
+    padding-left:0;
+    padding-right:0;
+  }
+
+  .mod-grid{
+    width:100%;
+    grid-template-columns:1fr!important;
+  }
+
+  .mod-card,
+  .mod-card:nth-child(3n+2),
+  .mod-card:nth-child(3n){
+    width:100%;
+    max-width:100%;
+    transform:none!important;
+    overflow:hidden;
+  }
+
+  .mod-name{
+    font-size:clamp(18px,6vw,24px);
+    line-height:1.05;
+    overflow-wrap:break-word;
+    word-break:normal;
+  }
+
+  .mod-desc{
+    max-width:100%;
+    overflow-wrap:break-word;
+  }
+
+  .btn-acid{
+    max-width:100%;
+    white-space:normal;
+    text-align:center;
+  }
+
+  .appointment-dialog{
+    width:100%;
+    max-width:calc(100vw - 24px);
+  }
+}
+
+@media(max-width:520px){
+  .wrap{
+    width:calc(100% - 28px)!important;
+  }
+
+  nav{
+    padding:14px 14px;
+  }
+
+  .logo{
+    font-size:11px;
+    letter-spacing:.14em;
+    max-width:98px;
+  }
+
+  .nav-pill{
+    max-width:116px;
+    font-size:7.5px;
+    padding:8px 9px;
+  }
+
+  .lang-toggle{
+    padding:8px 9px;
+    font-size:8px;
+  }
+
+  #s-hero{
+    padding-left:16px;
+    padding-right:16px;
+  }
+
+  .hero-h1{
+    font-size:clamp(40px,15.4vw,58px);
+    line-height:.9;
+    letter-spacing:-.05em;
+  }
+
+  .big-title{
+    font-size:clamp(34px,11.5vw,48px);
+  }
+
+  .impact-title,
+  .cta-h{
+    font-size:clamp(38px,13vw,58px);
+  }
+
+  .case-big{
+    font-size:clamp(36px,12vw,56px);
+  }
+
+  .stat-big{min-width:0;}
+
+  .seo-strip-inner{
+    font-size:7px;
+    letter-spacing:.11em;
+  }
+
+  .mod-card{
+    padding:26px 20px!important;
+  }
+
+  .mod-icon{
+    width:44px;
+    height:44px;
+    min-width:44px;
+  }
+
+  .foot-link{
+    max-width:100%;
+    overflow-wrap:anywhere;
+  }
+}
+
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "name": "ArchVerse",
+  "description": "Maquetas virtuales interactivas para desarrolladores inmobiliarios e inmobiliarias.",
+  "areaServed": "México",
+  "serviceType": [
+    "Maquetas virtuales inmobiliarias",
+    "Recorridos 3D interactivos",
+    "Visualización arquitectónica",
+    "Simulación financiera inmobiliaria",
+    "Orientación solar para proyectos inmobiliarios"
+  ],
+  "email": "ornelarq@gmail.com",
+  "telephone": "+526691011144"
+}
+</script>
+
+<!-- ───────────── FAVICONS ───────────── -->
+<link rel="icon" type="image/x-icon" href="https://res.cloudinary.com/dodxcdg1k/image/upload/v1778188977/favicon_ttfxbp.ico"/>
+
+<link rel="icon" type="image/png" sizes="32x32"
+href="https://res.cloudinary.com/dodxcdg1k/image/upload/v1778188977/favicon-32_m222d0.png"/>
+
+<link rel="apple-touch-icon" sizes="180x180"
+href="https://res.cloudinary.com/dodxcdg1k/image/upload/v1778188978/apple-touch-icon_isvzuq.png"/>
+
+<link rel="icon" type="image/png" sizes="512x512"
+href="https://res.cloudinary.com/dodxcdg1k/image/upload/v1778188979/favicon-512_inpwhx.png"/>
+
+<meta name="theme-color" content="#60A5FA"/>
+
+<!-- ───────────── OPEN GRAPH / WHATSAPP ───────────── -->
+<meta property="og:title"
+content="ArchVerse | Vende con experiencia, no con renders."/>
+
+<meta property="og:description"
+content="Maquetas virtuales interactivas para desarrollos inmobiliarios. Recorridos 3D, orientación solar, buscador de unidades, amenidades y experiencias inmersivas para acelerar ventas."/>
+
+<meta property="og:image"
+content="https://res.cloudinary.com/dodxcdg1k/image/upload/v1778189014/archverse-og_slmw1o.png"/>
+
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+
+<meta property="og:type" content="website"/>
+<meta property="og:locale" content="es_MX"/>
+<meta property="og:url" content="https://archverse.studio"/>
+
+<!-- ───────────── TWITTER / X ───────────── -->
+<meta name="twitter:card" content="summary_large_image"/>
+
+<meta name="twitter:title"
+content="ArchVerse | Vende con experiencia, no con renders."/>
+
+<meta name="twitter:description"
+content="Experiencias inmobiliarias inmersivas para desarrolladores y preventa."/>
+
+<meta name="twitter:image"
+content="https://res.cloudinary.com/dodxcdg1k/image/upload/v1778189014/archverse-og_slmw1o.png"/>
+
+<!-- ───────────── EXTRA BRANDING ───────────── -->
+<meta name="application-name" content="ArchVerse"/>
+<meta name="apple-mobile-web-app-title" content="ArchVerse"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+
+</head>
+<body>
+<h1 class="sr-seo">Maquetas virtuales interactivas para desarrollos inmobiliarios en México</h1>
+
+
+<!-- APPOINTMENT MODAL -->
+<div class="appointment-modal" id="appointmentModal" aria-hidden="true">
+  <div class="appointment-dialog" role="dialog" aria-modal="true" aria-label="Agendar cita ArchVerse">
+    <div class="appointment-head">
+      <div class="appointment-title">Agendar cita · ArchVerse (Calendly)</div>
+      <button class="appointment-close" id="appointmentClose" type="button" aria-label="Cerrar calendario">×</button>
+    </div>
+    <iframe
+      class="appointment-frame"
+      id="appointmentFrame"
+      src="https://calendly.com/ornelarq/new-meeting?embed_domain=archverse&embed_type=Inline"
+      title="Calendario para agendar cita ArchVerse"
+      loading="lazy">
+    </iframe>
+  </div>
+</div>
+
+
+<!-- CURSOR -->
+<div id="cur"></div>
+
+<!-- WEBGL CANVAS -->
+<canvas id="gl"></canvas>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="l-num" id="lnum">0</div>
+  <div class="l-label">Cargando experiencia</div>
+  <div class="l-bar" id="lbar"></div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">ArchVerse</div>
+  <div class="nav-r">
+    <ul class="nav-links">
+      <li><a href="#s-why">Por qué</a></li>
+      <li><a href="#s-features">Plataforma</a></li>
+      <li><a href="#s-case">Caso</a></li>
+      <li><a href="#s-modules">Módulos</a></li>
+    </ul>
+    <button class="lang-toggle" id="langToggle" type="button" aria-label="Cambiar idioma">EN</button>
+    <a href="#" class="nav-pill js-open-calendar" id="navDemo">Agendar cita →</a>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="section" id="s-hero">
+  <p class="hero-eyebrow" id="eyebrow">↳ Plataforma inmersiva · Real estate · MX · 2026</p>
+  <h1 class="hero-h1" id="h1">
+    <span class="word"><span class="word-inner">Vende</span></span>
+    <span class="word"><span class="word-inner"> con</span></span>
+    <br/>
+    <span class="word"><span class="word-inner"><em>experiencia,</em></span></span>
+    <br/>
+    <span class="word"><span class="word-inner">no con</span></span>
+    <br/>
+    <span class="word"><span class="word-inner">renders.</span></span>
+  </h1>
+  <div class="hero-bottom" id="hero-bot">
+    <p class="hero-desc">Tu comprador toma la decisión con lo que ve. ArchVerse convierte tu proyecto en una experiencia interactiva que vende antes de poner el primer ladrillo.</p>
+    <div class="hero-scroll-label">
+      <div class="scroll-ticker"></div>
+      Scroll
+    </div>
+  </div>
+</section>
+
+
+<!-- SEO STRIP -->
+<section class="seo-strip" id="seo-maquetas-virtuales" aria-label="Servicios ArchVerse">
+  <div class="seo-strip-inner">
+    <span>Maquetas virtuales interactivas</span>
+    <span>Recorridos 3D</span>
+    <span>Visualización arquitectónica</span>
+    <span>Preventa inmobiliaria</span>
+    <span>Experiencias inmersivas para desarrolladores</span>
+    <span>Inmobiliarias en México</span>
+    <span>Maquetas virtuales interactivas</span>
+    <span>Recorridos 3D</span>
+    <span>Visualización arquitectónica</span>
+    <span>Preventa inmobiliaria</span>
+    <span>Experiencias inmersivas para desarrolladores</span>
+    <span>Inmobiliarias en México</span>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span class="mq-item">Recorrido 3D<span class="mq-dot"></span></span>
+    <span class="mq-item">Orientación Solar<span class="mq-dot"></span></span>
+    <span class="mq-item">Buscador de Unidades<span class="mq-dot"></span></span>
+    <span class="mq-item">Simulador Financiero<span class="mq-dot"></span></span>
+    <span class="mq-item">Burbujas 360°<span class="mq-dot"></span></span>
+    <span class="mq-item">Entorno Urbano<span class="mq-dot"></span></span>
+    <span class="mq-item">Galería Media<span class="mq-dot"></span></span>
+    <span class="mq-item">Amenidades<span class="mq-dot"></span></span>
+    <span class="mq-item">Topografía Real<span class="mq-dot"></span></span>
+    <span class="mq-item">Recorrido 3D<span class="mq-dot"></span></span>
+    <span class="mq-item">Orientación Solar<span class="mq-dot"></span></span>
+    <span class="mq-item">Buscador de Unidades<span class="mq-dot"></span></span>
+    <span class="mq-item">Simulador Financiero<span class="mq-dot"></span></span>
+    <span class="mq-item">Burbujas 360°<span class="mq-dot"></span></span>
+    <span class="mq-item">Entorno Urbano<span class="mq-dot"></span></span>
+    <span class="mq-item">Galería Media<span class="mq-dot"></span></span>
+    <span class="mq-item">Amenidades<span class="mq-dot"></span></span>
+    <span class="mq-item">Topografía Real<span class="mq-dot"></span></span>
+  </div>
+</div>
+
+<!-- ── WHY ── -->
+<section class="section" id="s-why">
+  <div class="wrap">
+    <div class="why-grid">
+      <div>
+        <p class="tag js-up">Propuesta de valor</p>
+        <h2 class="big-title js-up">
+          De "Se ve bien"<br/>a<br/><em>"Lo quiero!"</em>
+        </h2>
+        <p class="body-text js-up">
+          Ya no presentas un proyecto. Presentas una ventaja comercial que el comprador puede explorar, sentir y recordar. ArchVerse reemplaza renders sueltos, PDFs y explicaciones interminables con una sola experiencia inmersiva que guía la decisión — sin que tengas que estar ahí explicando.
+        </p>
+      </div>
+      <div class="why-right">
+        <div class="stat-row js-up">
+          <div class="stat-big js-count" data-val="35" data-suf="%">0</div>
+          <div class="stat-copy"><strong>Menos tiempo explicando</strong>Al centralizar renders, inventario, entorno y amenidades, el cliente encuentra respuestas más rápido.</div>
+        </div>
+        <div class="stat-row js-up">
+          <div class="stat-big js-count" data-val="25" data-suf="%">0</div>
+          <div class="stat-copy"><strong>Cierre más rápido</strong>Una experiencia inmersiva reduce dudas y acelera la decisión cuando se combina con buen seguimiento.</div>
+        </div>
+        <div class="stat-row js-up">
+          <div class="stat-big js-count" data-val="20" data-suf="%">0</div>
+          <div class="stat-copy"><strong>Mejor conversión</strong>Más claridad, más recordación y una percepción de valor más alta durante la presentación.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FEATURES STICKY (desktop) ── -->
+<section class="section" id="s-features">
+  <span class="feat-mobile-header">La plataforma</span>
+  <div class="features-sticky">
+    <div class="feat-left">
+      <div class="feat-img-stack">
+        <!-- ★ INSTRUCCIONES: reemplaza VIDEO_ID_1…5 con el ID de tu video de YouTube      -->
+        <!--   Ejemplo: youtube.com/watch?v=dQw4w9WgXcQ → el ID es "dQw4w9WgXcQ"          -->
+        <div class="feat-img active" id="fi-0" data-yt-id="1195424235">
+          <iframe src="https://player.vimeo.com/video/1195424235?h=24f6d9b59d&autoplay=1&muted=1&loop=1&background=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" allowfullscreen title="Recorrido 3D"></iframe>
+        </div>
+        <div class="feat-img" id="fi-1" data-yt-id="1195424656">
+          <iframe src="https://player.vimeo.com/video/1195424656?h=deb41dae85&autoplay=1&muted=1&loop=1&background=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" allowfullscreen title="Galería y burbujas 360"></iframe>
+        </div>
+        <div class="feat-img" id="fi-2" data-yt-id="1195424925">
+          <iframe src="https://player.vimeo.com/video/1195424925?h=3ab8de4c94&autoplay=1&muted=1&loop=1&background=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" allowfullscreen title="Entorno urbano"></iframe>
+        </div>
+        <div class="feat-img" id="fi-3" data-yt-id="1195425171">
+          <iframe src="https://player.vimeo.com/video/1195425171?h=3cec26a90d&autoplay=1&muted=1&loop=1&background=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" allowfullscreen title="Buscador de unidades"></iframe>
+        </div>
+        <div class="feat-img" id="fi-4" data-yt-id="1195425262">
+          <iframe src="https://player.vimeo.com/video/1195425262?h=2cc44c1535&autoplay=1&muted=1&loop=1&background=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" allowfullscreen title="Solar y amenidades"></iframe>
+        </div>
+      </div>
+    </div>
+    <div class="feat-right">
+      <div class="feat-viewport">
+      <div class="feat-item active" data-img="0">
+        <div class="feat-num">01 / 05</div>
+        <h3 class="feat-title">Recorrido 3D en tiempo real</h3>
+        <p class="feat-desc">Primera persona, orbital o teletransporte. El comprador navega cada metro cuadrado antes de que el edificio exista — desde cualquier browser, sin instalar nada.</p>
+        <span class="feat-tag">WebGL · Pixel Streaming</span>
+      </div>
+      <div class="feat-item" data-img="1">
+        <div class="feat-num">02 / 05</div>
+        <h3 class="feat-title">Galería + Burbujas 360°</h3>
+        <p class="feat-desc">Material hero, interiores y exploración inmersiva de espacios. La primera impresión que construye deseo antes de la visita física.</p>
+        <span class="feat-tag">360° · Renders</span>
+      </div>
+      <div class="feat-item" data-img="2">
+        <div class="feat-num">03 / 05</div>
+        <h3 class="feat-title">Entorno urbano + Topografía</h3>
+        <p class="feat-desc">Puntos de interés, accesos y contexto geoespacial real. Convierte la ubicación en un argumento de venta, no solo en un dato técnico.</p>
+        <span class="feat-tag">Topografia · Real</span>
+      </div>
+      <div class="feat-item" data-img="3">
+        <div class="feat-num">04 / 05</div>
+        <h3 class="feat-title">Buscador de unidades + Finanzas</h3>
+        <p class="feat-desc">Disponibilidad, precio, m² y simulador de mensualidades dentro del mismo flujo. Del interés al número en segundos.</p>
+        <span class="feat-tag">CRM Live · Finanzas</span>
+      </div>
+      <div class="feat-item" data-img="4">
+        <div class="feat-num">05 / 05</div>
+        <h3 class="feat-title">Solar + Amenidades</h3>
+        <p class="feat-desc">Orientación lumínica hora a hora y amenidades con su propio recorrido 3D. No muestras características: haces que el comprador se proyecte viviendo ahí.</p>
+        <span class="feat-tag">Sun Study · Lifestyle</span>
+      </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FEATURES MOBILE (solo mobile, estructura limpia) ── -->
+<section id="s-features-mobile" aria-label="Plataforma ArchVerse">
+  <div class="fmob-wrap">
+    <p class="fmob-header">La plataforma</p>
+
+    <div class="fmob-card">
+      <div class="fmob-video-box">
+        <iframe src="https://player.vimeo.com/video/1195424235?h=24f6d9b59d&title=0&byline=0&portrait=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" allowfullscreen title="Recorrido 3D"></iframe>
+      </div>
+      <div class="fmob-num">01 / 05</div>
+      <h3 class="fmob-title">Recorrido 3D en tiempo real</h3>
+      <p class="fmob-desc">Primera persona, orbital o teletransporte. El comprador navega cada metro cuadrado antes de que el edificio exista — desde cualquier browser, sin instalar nada.</p>
+      <span class="fmob-tag">WebGL · Pixel Streaming</span>
+    </div>
+
+    <div class="fmob-card">
+      <div class="fmob-video-box">
+        <iframe src="https://player.vimeo.com/video/1195424656?h=deb41dae85&title=0&byline=0&portrait=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" allowfullscreen title="Galería y burbujas 360"></iframe>
+      </div>
+      <div class="fmob-num">02 / 05</div>
+      <h3 class="fmob-title">Galería + Burbujas 360°</h3>
+      <p class="fmob-desc">Material hero, interiores y exploración inmersiva de espacios. La primera impresión que construye deseo antes de la visita física.</p>
+      <span class="fmob-tag">360° · Renders</span>
+    </div>
+
+    <div class="fmob-card">
+      <div class="fmob-video-box">
+        <iframe src="https://player.vimeo.com/video/1195424925?h=3ab8de4c94&title=0&byline=0&portrait=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" allowfullscreen title="Entorno urbano"></iframe>
+      </div>
+      <div class="fmob-num">03 / 05</div>
+      <h3 class="fmob-title">Entorno urbano + Topografía</h3>
+      <p class="fmob-desc">Puntos de interés, accesos y contexto geoespacial real. Convierte la ubicación en un argumento de venta, no solo en un dato técnico.</p>
+      <span class="fmob-tag">Topografia · Real</span>
+    </div>
+
+    <div class="fmob-card">
+      <div class="fmob-video-box">
+        <iframe src="https://player.vimeo.com/video/1195425171?h=3cec26a90d&title=0&byline=0&portrait=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" allowfullscreen title="Buscador de unidades"></iframe>
+      </div>
+      <div class="fmob-num">04 / 05</div>
+      <h3 class="fmob-title">Buscador de unidades + Finanzas</h3>
+      <p class="fmob-desc">Disponibilidad, precio, m² y simulador de mensualidades dentro del mismo flujo. Del interés al número en segundos.</p>
+      <span class="fmob-tag">CRM Live · Finanzas</span>
+    </div>
+
+    <div class="fmob-card">
+      <div class="fmob-video-box">
+        <iframe src="https://player.vimeo.com/video/1195425262?h=2cc44c1535&title=0&byline=0&portrait=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" allowfullscreen title="Solar y amenidades"></iframe>
+      </div>
+      <div class="fmob-num">05 / 05</div>
+      <h3 class="fmob-title">Solar + Amenidades</h3>
+      <p class="fmob-desc">Orientación lumínica hora a hora y amenidades con su propio recorrido 3D. No muestras características: haces que el comprador se proyecte viviendo ahí.</p>
+      <span class="fmob-tag">Sun Study · Lifestyle</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── IMPACT ── -->
+<section class="section" id="s-impact">
+  <div class="impact-num-bg">9</div>
+  <div class="wrap impact-inner">
+    <p class="impact-label js-up">Impacto real · Estimado · MX</p>
+    <h2 class="impact-title js-up">
+      Resultados que<br/>mueven el pipeline.
+    </h2>
+    <div class="impact-stats">
+      <div class="imp-stat">
+        <div class="imp-num"><span class="imp-val js-count" data-val="9">0</span><span class="imp-unit" data-unit="módulos">módulos</span></div>
+        <div class="imp-label">Integrados en<br/>una sola plataforma</div>
+      </div>
+      <div class="imp-stat">
+        <div class="imp-num"><span class="imp-val js-count" data-val="100" data-suf="%">0%</span></div>
+        <div class="imp-label">En browser,<br/>sin instalar nada</div>
+      </div>
+      <div class="imp-stat">
+        <div class="imp-num"><span class="imp-val js-count" data-pre="+" data-val="40" data-suf="%">+0%</span></div>
+        <div class="imp-label">Más valor percibido<br/>del proyecto</div>
+      </div>
+      <div class="imp-stat">
+        <div class="imp-num"><span class="imp-val js-count" data-val="0">0</span></div>
+        <div class="imp-label">Mantenimiento<br/>de la plataforma</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CASE ── -->
+<section class="section" id="s-case">
+  <div class="wrap">
+    <div class="case-head">
+      <p class="tag js-up">Caso ejemplo · Residencial premium</p>
+      <h2 class="case-big js-up">
+        Una experiencia,<br/><em>un cierre.</em>
+      </h2>
+    </div>
+    <div class="case-layout js-up">
+      <div class="case-photo">
+        <img src="https://lh3.googleusercontent.com/d/1cH5C4bUqwLCaGs7grVSUoB3qUmQ6GaXQ" alt="Desarrollo"/>
+        <div class="case-photo-overlay">
+          <p class="case-quote">"No te estoy vendiendo renders. Te estoy proponiendo una plataforma que transforma cómo tus clientes viven tu proyecto — y cómo deciden comprarlo."</p>
+        </div>
+      </div>
+      <div class="case-data">
+        <div>
+          <p class="case-tag-label">Antes: renders sueltos, PDF, Excel, discurso fragmentado</p>
+          <div class="case-results">
+            <div class="c-row">
+              <div class="c-num js-count" data-pre="+" data-val="40" data-suf="%">+0%</div>
+              <div class="c-label">Más valor percibido<br/>del proyecto</div>
+            </div>
+            <div class="c-row">
+              <div class="c-num js-count" data-pre="×" data-val="3" data-suf="">×0</div>
+              <div class="c-label">Más tiempo de calidad<br/>con cada prospecto</div>
+            </div>
+            <div class="c-row">
+              <div class="c-num" style="font-size:clamp(28px,2.8vw,42px);line-height:1.1;">3–5<br/>sem.</div>
+              <div class="c-label">Para tener tu plataforma<br/>lista para vender</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── MODULES ── -->
+<section class="section" id="s-modules">
+  <div class="wrap">
+    <div class="mod-intro">
+      <div>
+        <p class="tag js-up">Plataforma completa</p>
+        <h2 class="big-title js-up">9 módulos.<br/><em>Un argumento.</em></h2>
+      </div>
+      <p class="mod-sub js-up">Cada módulo diseñado para llevar al comprador de la curiosidad a la firma.</p>
+    </div>
+    <div class="mod-grid">
+      <div class="mod-card js-up"><div class="mod-card-video"><iframe src="https://player.vimeo.com/video/1195424235?h=24f6d9b59d&background=1&autoplay=1&muted=1&loop=1" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div><span class="mod-orbit"></span><div class="mod-n">01</div><span class="mod-icon">🏗️</span><div class="mod-name">Recorrido 3D</div><div class="mod-desc">Primera persona o orbital — sin instalar nada. El proyecto vivo desde el día uno.</div></div>
+      <div class="mod-card js-up"><div class="mod-card-video"><iframe src="https://player.vimeo.com/video/1195424656?h=deb41dae85&background=1&autoplay=1&muted=1&loop=1" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div><span class="mod-orbit"></span><div class="mod-n">02</div><span class="mod-icon">🖼️</span><div class="mod-name">Galería visual</div><div class="mod-desc">Renders, interiores y material hero para construir deseo desde la primera impresión.</div></div>
+      <div class="mod-card js-up"><div class="mod-card-video"><iframe src="https://player.vimeo.com/video/1195424925?h=3ab8de4c94&background=1&autoplay=1&muted=1&loop=1" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div><span class="mod-orbit"></span><div class="mod-n">03</div><span class="mod-icon">🌍</span><div class="mod-name">Entorno urbano</div><div class="mod-desc">POIs, accesos y contexto geoespacial. La ubicación como argumento, no como dato.</div></div>
+      <div class="mod-card js-up"><div class="mod-card-video"><iframe src="https://player.vimeo.com/video/1195425171?h=3cec26a90d&background=1&autoplay=1&muted=1&loop=1" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div><span class="mod-orbit"></span><div class="mod-n">04</div><span class="mod-icon">☀️</span><div class="mod-name">Orientación solar</div><div class="mod-desc">Iluminación y asoleamiento hora a hora. Valor técnico explicado sin fricción.</div></div>
+      <div class="mod-card js-up"><div class="mod-card-video"><iframe src="https://player.vimeo.com/video/1195425262?h=2cc44c1535&background=1&autoplay=1&muted=1&loop=1" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div><span class="mod-orbit"></span><div class="mod-n">05</div><span class="mod-icon">🏢</span><div class="mod-name">Buscador de unidades</div><div class="mod-desc">Precio, m², disponibilidad y renders de tipologías en un solo flujo comercial.</div></div>
+      <div class="mod-card js-up"><div class="mod-card-video"><iframe src="https://player.vimeo.com/video/1195425171?h=3cec26a90d&background=1&autoplay=1&muted=1&loop=1" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div><span class="mod-orbit"></span><div class="mod-n">06</div><span class="mod-icon">💰</span><div class="mod-name">Simulador financiero</div><div class="mod-desc">Enganche, plazo, mensualidad. De la duda al número en tiempo real.</div></div>
+      <div class="mod-card js-up"><div class="mod-card-video"><iframe src="https://player.vimeo.com/video/1195424925?h=3ab8de4c94&background=1&autoplay=1&muted=1&loop=1" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div><span class="mod-orbit"></span><div class="mod-n">07</div><span class="mod-icon">🧩</span><div class="mod-name">Amenidades</div><div class="mod-desc">Pool, lobby, gym y rooftop con su propio recorrido 3D — el lifestyle que vende el proyecto.</div></div>
+      <div class="mod-card js-up"><div class="mod-card-video"><iframe src="https://player.vimeo.com/video/1195424656?h=deb41dae85&background=1&autoplay=1&muted=1&loop=1" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div><span class="mod-orbit"></span><div class="mod-n">08</div><span class="mod-icon">⬤</span><div class="mod-name">Burbujas 360°</div><div class="mod-desc">Exploración inmersiva del interior. Inmersión total, confianza desde el primer clic.</div></div>
+      <div class="mod-card js-up"><div class="mod-card-video"><iframe src="https://player.vimeo.com/video/1195424235?h=24f6d9b59d&background=1&autoplay=1&muted=1&loop=1" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div><span class="mod-orbit"></span><div class="mod-n">09</div><span class="mod-icon">🗺️</span><div class="mod-name">Topografía real</div><div class="mod-desc">Tu proyecto contextualizado geoespacialmente. El entorno como ventaja competitiva.</div></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ── CTA ── -->
+<section class="section" id="s-cta">
+  <div class="cta-glyph">AV</div>
+  <div class="wrap" style="position:relative;z-index:1;text-align:center;">
+    <p class="cta-mono js-up">Cada semana sin esto, tu competencia avanza.</p>
+    <h2 class="cta-h js-up">
+      Haz que tu<br/>proyecto se<br/><em>sienta real.</em>
+    </h2>
+    <div class="cta-row js-up">
+      <a href="https://wa.me/526691011144?text=Hola%2C%20me%20interesa%20ArchVerse%20y%20quiero%20m%C3%A1s%20info" target="_blank" class="btn-acid">WhatsApp →</a>
+      <a href="#" class="btn-acid btn-ghost js-open-calendar" id="scheduleCta">Agendar cita</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="foot-inner">
+      <div class="foot-logo">ArchVerse</div>
+      <div class="foot-contact">
+        <a href="mailto:ornelarq@gmail.com" class="foot-link">ornelarq@gmail.com</a>
+        <a href="tel:6691011144" class="foot-link">669 101 1144</a>
+        <a href="https://instagram.com/ojo_salado" class="foot-link">@ojo_salado</a>
+        <a href="https://linkedin.com/in/jesús-ornelas" class="foot-link">LinkedIn</a>
+      </div>
+      <div class="foot-copy">© 2026 · Mazatlán, Sinaloa, MX</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+/* ══ LOADER ══════════════════════════════ */
+(function(){
+  const num=document.getElementById('lnum');
+  const bar=document.getElementById('lbar');
+  let v=0;
+  const iv=setInterval(()=>{
+    v+=Math.random()*14;
+    if(v>=100){v=100;clearInterval(iv);}
+    num.textContent=Math.floor(v);
+    bar.style.width=v+'%';
+  },60);
+  window.addEventListener('load',()=>{
+    v=100;num.textContent=100;bar.style.width='100%';
+    setTimeout(()=>{
+      const tl=gsap.timeline({onComplete:boot});
+      tl.to('#loader',{yPercent:-100,duration:1.1,ease:'expo.inOut'})
+        .from('nav',{opacity:0,duration:.5},'-=.3');
+    },300);
+  });
+})();
+
+/* ══ WEBGL NOISE BACKGROUND ══════════════ */
+(function(){
+  const canvas=document.getElementById('gl');
+  const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:false});
+  renderer.setSize(window.innerWidth,window.innerHeight);
+  renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
+
+  const scene=new THREE.Scene();
+  const cam=new THREE.OrthographicCamera(-1,1,1,-1,0,1);
+
+  const geo=new THREE.PlaneGeometry(2,2);
+  const mat=new THREE.ShaderMaterial({
+    uniforms:{
+      uTime:{value:0},
+      uRes:{value:new THREE.Vector2(window.innerWidth,window.innerHeight)},
+      uMouse:{value:new THREE.Vector2(.5,.5)},
+      uScroll:{value:0},
+    },
+    vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position,1.);}`,
+    fragmentShader:`
+      uniform float uTime;
+      uniform vec2 uRes;
+      uniform vec2 uMouse;
+      uniform float uScroll;
+      varying vec2 vUv;
+
+      float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+      float noise(vec2 p){
+        vec2 i=floor(p);vec2 f=fract(p);
+        vec2 u=f*f*(3.-2.*f);
+        return mix(mix(hash(i),hash(i+vec2(1,0)),u.x),
+                   mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),u.x),u.y);
+      }
+      float fbm(vec2 p){
+        float v=0.;float a=.5;
+        for(int i=0;i<5;i++){v+=a*noise(p);p*=2.1;a*=.5;}
+        return v;
+      }
+      void main(){
+        vec2 uv=vUv;
+        uv.y+=uScroll*.08;
+        vec2 mp=uMouse-.5;
+        uv+=mp*.04;
+        float n=fbm(uv*2.8+uTime*.06);
+        float n2=fbm(uv*1.4-uTime*.04+vec2(n));
+        float f=fbm(uv*3.2+n2+uTime*.05);
+        vec3 col=mix(vec3(.03,.04,.08),vec3(.49,.83,.99),smoothstep(.38,.72,f)*.20);
+        col=mix(col,vec3(.10,.08,.20),smoothstep(.5,.9,n2)*.38);
+        float grain=hash(uv*uRes+uTime)*0.025;
+        gl_FragColor=vec4(col+grain,1.);
+      }
+    `,
+    transparent:true,
+  });
+  const mesh=new THREE.Mesh(geo,mat);
+  scene.add(mesh);
+
+  let mx=.5,my=.5;
+  document.addEventListener('mousemove',e=>{mx=e.clientX/window.innerWidth;my=1-e.clientY/window.innerHeight;});
+  window.addEventListener('scroll',()=>{mat.uniforms.uScroll.value=window.scrollY/window.innerHeight;});
+  window.addEventListener('resize',()=>{
+    renderer.setSize(window.innerWidth,window.innerHeight);
+    mat.uniforms.uRes.value.set(window.innerWidth,window.innerHeight);
+  });
+
+  let raf;
+  (function loop(t){
+    raf=requestAnimationFrame(loop);
+    mat.uniforms.uTime.value=t*.001;
+    mat.uniforms.uMouse.value.lerp(new THREE.Vector2(mx,my),.04);
+    renderer.render(scene,cam);
+  })(0);
+  setTimeout(()=>canvas.classList.add('vis'),800);
+})();
+
+/* ══ BOOT ════════════════════════════════ */
+function boot(){
+  initCursor();
+  initHero();
+  initReveal();
+  initFeatures();
+  initCounters();
+  initNavSmooth();
+  initModuleCards();
+}
+
+/* ══ CURSOR ══════════════════════════════ */
+function initCursor(){
+  const c=document.getElementById('cur');
+  let cx=0,cy=0,tx=0,ty=0;
+  document.addEventListener('mousemove',e=>{tx=e.clientX;ty=e.clientY;});
+  (function loop(){
+    cx+=(tx-cx)*.18;cy+=(ty-cy)*.18;
+    c.style.left=cx+'px';c.style.top=cy+'px';
+    requestAnimationFrame(loop);
+  })();
+  document.querySelectorAll('a,button,.mod-card,.feat-item').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{c.classList.add('big');});
+    el.addEventListener('mouseleave',()=>c.classList.remove('big'));
+  });
+}
+
+/* ══ HERO ════════════════════════════════ */
+function initHero(){
+  const tl=gsap.timeline({delay:.05});
+  tl.to('#eyebrow',{opacity:1,y:0,duration:.8,ease:'expo.out'})
+    .to('#h1 .word-inner',{y:'0%',duration:1.1,ease:'expo.out',stagger:.07},'-=.5')
+    .to('#hero-bot',{opacity:1,duration:.9,ease:'expo.out'},'-=.5');
+}
+
+/* ══ SCROLL REVEALS ══════════════════════ */
+function initReveal(){
+  document.querySelectorAll('.js-up').forEach((el,i)=>{
+    gsap.to(el,{
+      y:0,opacity:1,duration:1,ease:'expo.out',
+      scrollTrigger:{trigger:el,start:'top 86%'},
+      delay:(i%4)*.07,
+    });
+  });
+  document.querySelectorAll('.js-fade').forEach(el=>{
+    gsap.to(el,{opacity:1,duration:1,ease:'expo.out',
+      scrollTrigger:{trigger:el,start:'top 85%'}});
+  });
+
+  /* Parallax on case photo */
+  gsap.to('.case-photo img,.case-photo video',{
+    yPercent:-12,ease:'none',
+    scrollTrigger:{trigger:'.case-photo',start:'top bottom',end:'bottom top',scrub:true}
+  });
+}
+
+
+/* ══ FEATURE MEDIA: acepta links de video o imagen ═════════ */
+function initFeatureMedia(){
+  document.querySelectorAll('.feat-img').forEach(box=>{
+    /* Skip if already correctly populated with a video */
+    if(box.querySelector('video')) return;
+    const url=(box.dataset.mediaUrl||'').trim();
+    if(!url) return;
+    const type=(box.dataset.mediaType||'auto').toLowerCase();
+    const isVideo=type==='video'||/\.(mp4|webm|ogg)(\?|#|$)/i.test(url)||url.includes('/video/upload/');
+    const alt=box.dataset.alt||'ArchVerse media';
+    box.innerHTML=isVideo
+      ? `<video src="${url}" autoplay muted loop playsinline preload="metadata" aria-label="${alt}"></video>`
+      : `<img src="${url}" alt="${alt}" loading="lazy"/>`;
+  });
+}
+
+/* ══ STICKY FEATURE ══════════════════════ */
+function initFeatures(){
+  initFeatureMedia();
+  const items=document.querySelectorAll('.feat-item');
+  const imgs=document.querySelectorAll('.feat-img');
+  let currentFeature = -1;
+
+  function activate(idx){
+    if(idx === currentFeature) return;
+    currentFeature = idx;
+
+    items.forEach((it,i)=>{
+      it.classList.remove('active','prev','next');
+      if(i === idx) it.classList.add('active');
+      else if(i === idx - 1) it.classList.add('prev');
+      else if(i === idx + 1) it.classList.add('next');
+
+      const title = it.querySelector('.feat-title');
+      const desc = it.querySelector('.feat-desc');
+      const tag = it.querySelector('.feat-tag');
+
+      if(i === idx){
+        gsap.fromTo([title,desc,tag],
+          {y:18,opacity:.35},
+          {y:0,opacity:1,duration:.72,stagger:.055,ease:'expo.out',overwrite:true}
+        );
+      }
+    });
+
+    imgs.forEach((im,i)=>{
+      const isActive = i === idx;
+      const vid=im.querySelector('video');
+
+      im.classList.remove('active','media-prev','media-next');
+      if(isActive) im.classList.add('active');
+      else if(i === idx - 1) im.classList.add('media-prev');
+      else if(i === idx + 1) im.classList.add('media-next');
+
+      if(vid){
+        if(isActive){ vid.currentTime=0; vid.play().catch(()=>{}); }
+        else{ vid.pause(); }
+      }
+      const iframe=im.querySelector('iframe');
+      if(iframe){
+        try{
+          iframe.contentWindow.postMessage(
+            JSON.stringify({event:'command',func:isActive?'playVideo':'pauseVideo',args:''}),
+            '*'
+          );
+        }catch(e){}
+      }
+      const media=im.querySelector('video,img');
+      if(isActive && media){
+        gsap.fromTo(media,{scale:1.075},{scale:1,duration:1.05,ease:'expo.out',overwrite:true});
+      }
+    });
+  }
+
+  const isMobile = window.innerWidth <= 900;
+
+  if(!isMobile) activate(0);
+
+  if(!isMobile){
+    /* Desktop: sticky scroll feature */
+    ScrollTrigger.create({
+      trigger:'#s-features',
+      start:'top top',
+      end:()=>'+=' + (items.length * window.innerHeight * 0.78),
+      pin:'.features-sticky',
+      pinSpacing:true,
+      anticipatePin:1,
+      onUpdate:(self)=>{
+        const idx = Math.min(items.length-1, Math.max(0, Math.round(self.progress * (items.length-1))));
+        activate(idx);
+      }
+    });
+  } else {
+    /* Mobile: kill any GSAP inline styles completely so CSS takes over */
+    gsap.set(items, {clearProps:'all'});
+    items.forEach(it=>{
+      it.removeAttribute('style');
+      it.querySelectorAll('.feat-title,.feat-desc,.feat-tag').forEach(el=>{
+        el.removeAttribute('style');
+      });
+    });
+  }
+
+  /* ── MOBILE: play inline videos when scrolled into view ── */
+  if(window.innerWidth <= 900){
+    const mobileVids = document.querySelectorAll('.feat-mobile-video video');
+    if('IntersectionObserver' in window){
+      const obs = new IntersectionObserver((entries)=>{
+        entries.forEach(entry=>{
+          const vid = entry.target;
+          if(entry.isIntersecting){
+            vid.play().catch(()=>{});
+          } else {
+            vid.pause();
+          }
+        });
+      },{threshold:0.35});
+      mobileVids.forEach(v=>obs.observe(v));
+    } else {
+      mobileVids.forEach(v=>v.play().catch(()=>{}));
+    }
+  }
+}
+
+
+/* ══ MODULE CARD INTERACTION + MAGNIFIER LENS ═════════════════════════════ */
+function initModuleCards(){
+  const cards = document.querySelectorAll('.mod-card');
+  cards.forEach(card=>{
+    card.addEventListener('mousemove',e=>{
+      const rect = card.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      card.style.setProperty('--x', x + '%');
+      card.style.setProperty('--y', y + '%');
+    });
+    card.addEventListener('mouseleave',()=>{
+      card.style.setProperty('--x','50%');
+      card.style.setProperty('--y','50%');
+    });
+  });
+
+  /* magnifier lens */
+  const isTouch = matchMedia('(hover:none),(pointer:coarse)').matches;
+  if(isTouch) return;
+
+  const lens = document.createElement('div');
+  lens.className = 'mod-lens';
+  lens.innerHTML = '<div class="mod-lens-img"></div><div class="mod-lens-ring"></div><div class="mod-lens-meta"><div class="mod-lens-name"></div><div class="mod-lens-num"></div></div>';
+  document.body.appendChild(lens);
+  const lensImg = lens.querySelector('.mod-lens-img');
+  const lensName = lens.querySelector('.mod-lens-name');
+  const lensNum = lens.querySelector('.mod-lens-num');
+
+  let tx = 0, ty = 0, cx = 0, cy = 0;
+  let armed = false;
+
+  cards.forEach(card=>{
+    const img = card.dataset.img;
+    if(!img) return;
+    const name = card.querySelector('.mod-name');
+    const num = card.querySelector('.mod-n');
+    card.addEventListener('mouseenter',e=>{
+      lensImg.style.backgroundImage = `url('${img}')`;
+      if(name) lensName.textContent = name.textContent;
+      if(num) lensNum.textContent = num.textContent;
+      cx = e.clientX; cy = e.clientY;
+      tx = e.clientX; ty = e.clientY;
+      lens.style.transform = `translate(-50%,-50%) scale(.65) rotate(-4deg)`;
+      lens.style.left = cx+'px';
+      lens.style.top  = cy+'px';
+      requestAnimationFrame(()=>lens.classList.add('is-on'));
+      armed = true;
+    });
+    card.addEventListener('mouseleave',()=>{
+      lens.classList.remove('is-on');
+      armed = false;
+    });
+    card.addEventListener('mousemove',e=>{
+      const off = 170;
+      let nx = e.clientX + off;
+      let ny = e.clientY - 30;
+      // flip if going off the right edge
+      if(nx + 160 > window.innerWidth) nx = e.clientX - off;
+      ny = Math.max(120, Math.min(window.innerHeight - 120, ny));
+      tx = nx; ty = ny;
+    });
+  });
+
+  (function loop(){
+    cx += (tx - cx) * .14;
+    cy += (ty - cy) * .14;
+    if(armed){
+      lens.style.left = cx + 'px';
+      lens.style.top  = cy + 'px';
+    }
+    requestAnimationFrame(loop);
+  })();
+}
+
+/* ══ COUNT UP ════════════════════════════ */
+function initCounters(){
+  document.querySelectorAll('.js-count').forEach(el=>{
+    const val=parseInt(el.dataset.val);
+    if(isNaN(val)) return;
+    const suf=el.dataset.suf||'';
+    const pre=el.dataset.pre||'';
+    ScrollTrigger.create({
+      trigger:el,start:'top 80%',
+      onEnter:()=>{
+        const o={n:0};
+        gsap.to(o,{n:val,duration:1.6,ease:'power2.out',
+          onUpdate:()=>el.textContent=pre+Math.round(o.n)+suf});
+      }
+    });
+  });
+}
+
+/* ══ MOBILE FEATURES VIDEO AUTOPLAY ═════════════════ */
+(function(){
+  if(!('IntersectionObserver' in window)) return;
+  const vids = document.querySelectorAll('#s-features-mobile .fmob-video-box video');
+  if(!vids.length) return;
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ e.target.play().catch(()=>{}); }
+      else { e.target.pause(); }
+    });
+  },{threshold:0.3});
+  vids.forEach(v=>obs.observe(v));
+})();
+function initNavSmooth(){
+  document.querySelectorAll('a[href^="#"]').forEach(a=>{
+    a.addEventListener('click',e=>{
+      const t=document.querySelector(a.getAttribute('href'));
+      if(!t)return;
+      e.preventDefault();
+      gsap.to(window,{scrollTo:{y:t,offsetY:72},duration:1.2,ease:'expo.inOut'});
+    });
+  });
+}
+</script>
+
+<script>
+/* ══ ES / EN LANGUAGE TOGGLE ═══════════════════════════ */
+(function(){
+  const content={
+    es:{
+      lang:'EN', htmlLang:'es',
+      navDemo:'Agendar cita →',
+      nav:['Por qué','Plataforma','Caso','Módulos'],
+      eyebrow:'↳ Plataforma inmersiva · Real estate · MX · 2026',
+      h1:['Vende',' con','experiencia,','no con','renders.'],
+      desc:'Tu comprador toma la decisión con lo que ve. ArchVerse convierte tu proyecto en una experiencia interactiva que vende antes de poner el primer ladrillo.',
+      marquee:['Recorrido 3D','Orientación Solar','Buscador de Unidades','Simulador Financiero','Burbujas 360°','Entorno Urbano','Galería Media','Amenidades','Topografía Real'],
+      whyTag:'Propuesta de valor',
+      whyTitle:'De "Se ve bien"<br/>a<br/><em>"Lo quiero!"</em>',
+      whyBody:'Ya no presentas un proyecto. Presentas una ventaja comercial que el comprador puede explorar, sentir y recordar. ArchVerse reemplaza renders sueltos, PDFs y explicaciones interminables con una sola experiencia inmersiva que guía la decisión — sin que tengas que estar ahí explicando.',
+      stats:[['Menos tiempo explicando','Al centralizar renders, inventario, entorno y amenidades, el cliente encuentra respuestas más rápido.'],['Cierre más rápido','Una experiencia inmersiva reduce dudas y acelera la decisión cuando se combina con buen seguimiento.'],['Mejor conversión','Más claridad, más recordación y una percepción de valor más alta durante la presentación.']],
+      features:[
+        ['Recorrido 3D en tiempo real','Primera persona, orbital o teletransporte. El comprador navega cada metro cuadrado antes de que el edificio exista — desde cualquier browser, sin instalar nada.','WebGL · Pixel Streaming'],
+        ['Galería + Burbujas 360°','Material hero, interiores y exploración inmersiva de espacios. La primera impresión que construye deseo antes de la visita física.','360° · Renders'],
+        ['Entorno urbano + Topografía','Puntos de interés, accesos y contexto geoespacial real. Convierte la ubicación en un argumento de venta, no solo en un dato técnico.','Topografia · Real'],
+        ['Buscador de unidades + Finanzas','Disponibilidad, precio, m² y simulador de mensualidades dentro del mismo flujo. Del interés al número en segundos.','CRM Live · Finanzas'],
+        ['Solar + Amenidades','Orientación lumínica hora a hora y amenidades con su propio recorrido 3D. No muestras características: haces que el comprador se proyecte viviendo ahí.','Sun Study · Lifestyle']
+      ],
+      impactLabel:'Impacto real · Estimado · MX',
+      impactTitle:'Resultados que<br/>mueven el pipeline.',
+      impactStats:['Integrados en<br/>una sola plataforma','En browser,<br/>sin instalar nada','Más valor percibido<br/>del proyecto','Mantenimiento<br/>de la plataforma'],
+      impactUnits:['módulos','','',''],
+      caseTag:'Caso ejemplo · Residencial premium',
+      caseTitle:'Una experiencia,<br/><em>un cierre.</em>',
+      caseBefore:'Antes: renders sueltos, PDF, Excel, discurso fragmentado',
+      quote:'"No te estoy vendiendo renders. Te estoy proponiendo una plataforma que transforma cómo tus clientes viven tu proyecto — y cómo deciden comprarlo."',
+      caseRows:['Más valor percibido<br/>del proyecto','Más tiempo de calidad<br/>con cada prospecto','Para tener tu plataforma<br/>lista para vender'],
+      caseCTA:'Quiero esto para mi proyecto',
+      modulesTag:'Plataforma completa',
+      modulesTitle:'9 módulos.<br/><em>Un argumento.</em>',
+      modulesSub:'Cada módulo diseñado para llevar al comprador de la curiosidad a la firma.',
+      modules:[
+        ['Recorrido 3D','Primera persona o orbital — sin instalar nada. El proyecto vivo desde el día uno.'],['Galería visual','Renders, interiores y material hero para construir deseo desde la primera impresión.'],['Entorno urbano','POIs, accesos y contexto geoespacial. La ubicación como argumento, no como dato.'],['Orientación solar','Iluminación y asoleamiento hora a hora. Valor técnico explicado sin fricción.'],['Buscador de unidades','Precio, m², disponibilidad y renders de tipologías en un solo flujo comercial.'],['Simulador financiero','Enganche, plazo, mensualidad. De la duda al número en tiempo real.'],['Amenidades','No muestras amenidades: haces que el comprador se proyecte viviendo ahí.'],['Burbujas 360°','Exploración inmersiva del interior. Inmersión total, confianza desde el primer clic.'],['Topografía real','Tu proyecto contextualizado geoespacialmente. El entorno como ventaja competitiva.']
+      ],
+      ctaMono:'Cada semana sin esto, tu competencia avanza.',
+      ctaTitle:'Haz que tu<br/>proyecto se<br/><em>sienta real.</em>',
+      ctaBtns:['Escríbeme →','Agendar cita']
+    },
+    en:{
+      lang:'ES', htmlLang:'en',
+      navDemo:'Agendar cita →',
+      nav:['Why','Platform','Case','Modules'],
+      eyebrow:'↳ Immersive platform · Real estate · MX · 2026',
+      h1:['Sell',' with','experience,','not with','renders.'],
+      desc:'ArchVerse transforms real estate developments into interactive platforms that reduce friction, increase perceived value, and accelerate closing.',
+      marquee:['3D Tour','Solar Orientation','Unit Finder','Financial Simulator','360° Bubbles','Urban Context','Media Gallery','Amenities','Real Topography'],
+      whyTag:'Value proposition',
+      whyTitle:'From "looks<br/>good" to<br/><em>"I want it."</em>',
+      whyBody:'You no longer present a project. You present a commercial advantage. ArchVerse replaces loose renders, PDFs, and long explanations with one immersive experience that guides the buyer’s decision.',
+      stats:[['Less time explaining','By centralizing renders, inventory, context, and amenities, clients find answers faster.'],['Faster closing','An immersive experience reduces doubts and speeds up decisions when paired with strong follow-up.'],['Better conversion','More clarity, stronger recall, and higher perceived value during the sales presentation.']],
+      features:[
+        ['Real-time 3D tour','First-person, orbit, or teleport navigation. Buyers explore every square meter before the building exists — from any browser, no installation required.','WebGL · Pixel Streaming'],
+        ['Gallery + 360° bubbles','Hero visuals, interiors, and immersive spatial exploration. A first impression that builds desire before the physical visit.','360° · Renders'],
+        ['Urban context + Topography','Points of interest, access routes, and real geospatial context. The location becomes a sales argument, not just technical data.','Topografia · Real'],
+        ['Unit finder + Finance','Availability, price, square meters, and monthly payment simulation in the same flow. From interest to numbers in seconds.','Live CRM · Finance'],
+        ['Solar + Amenities','Hour-by-hour lighting and amenities with their own 3D experience. You do not show features — you help buyers imagine living there.','Sun Study · Lifestyle']
+      ],
+      impactLabel:'Real impact · Estimated · MX',
+      impactTitle:'Results that<br/>move the pipeline.',
+      impactStats:['Integrated in<br/>one single platform','In browser,<br/>no install needed','More perceived<br/>project value','Platform<br/>maintenance'],
+      impactUnits:['modules','','',''],
+      caseTag:'Example case · Premium residential',
+      caseTitle:'One experience,<br/><em>one closing.</em>',
+      caseBefore:'Before: loose renders, PDF, Excel, fragmented pitch',
+      quote:'"I am not proposing just a visualization. I am proposing a platform to sell your project better, with more clarity for the client and a much more premium commercial experience."',
+      caseRows:['Higher perceived<br/>project value','More quality time<br/>with each prospect','To get your platform<br/>ready to sell'],
+      caseCTA:'I want this for my project',
+      modulesTag:'Complete platform',
+      modulesTitle:'9 modules.<br/><em>One argument.</em>',
+      modulesSub:'Each module is designed to move buyers from curiosity to signing.',
+      modules:[
+        ['3D Tour','First-person or orbit mode — no installation required. The project alive from day one.'],['Visual Gallery','Renders, interiors, and hero content to build desire from the first impression.'],['Urban Context','POIs, access routes, and geospatial context. Location as an argument, not just data.'],['Solar Orientation','Hour-by-hour lighting and sun exposure. Technical value explained without friction.'],['Unit Finder','Price, square meters, availability, and typology renders in one commercial flow.'],['Financial Simulator','Down payment, term, monthly payment. From doubt to numbers in real time.'],['Amenities','You do not show amenities: you help the buyer picture living there.'],['360° Bubbles','Immersive interior exploration. Full immersion and trust from the first click.'],['Real Topography','Your project contextualized geospatially. The environment as a competitive edge.']
+      ],
+      ctaMono:'Ready to sell differently?',
+      ctaTitle:'Present your<br/>development as<br/><em>an experience.</em>',
+      ctaBtns:['Write me →','Schedule meeting']
+    }
+  };
+
+  let current=localStorage.getItem('archverse_lang')||'es';
+  const $=(s)=>document.querySelector(s);
+  const $$=(s)=>document.querySelectorAll(s);
+
+  function setLang(lang){
+    current=lang; localStorage.setItem('archverse_lang',lang);
+    const t=content[lang];
+    document.documentElement.lang=t.htmlLang;
+    const btn=$('#langToggle'); if(btn) btn.textContent=t.lang;
+    const demo=$('#navDemo'); if(demo) demo.textContent=t.navDemo;
+    $$('.nav-links a').forEach((a,i)=>{if(t.nav[i]) a.textContent=t.nav[i];});
+    const eb=$('#eyebrow'); if(eb) eb.textContent=t.eyebrow;
+    const words=$$('#h1 .word-inner');
+    words.forEach((w,i)=>{ if(t.h1[i]) w.innerHTML=(i===2?'<em>'+t.h1[i]+'</em>':t.h1[i]); });
+    const hd=$('.hero-desc'); if(hd) hd.textContent=t.desc;
+    const mq=$$('.mq-item'); mq.forEach((el,i)=>{ const label=t.marquee[i%t.marquee.length]; el.innerHTML=label+'<span class="mq-dot"></span>'; });
+    const tags=$$('.tag');
+    if(tags[0]) tags[0].textContent=t.whyTag;
+    const whyTitle=$('#s-why .big-title'); if(whyTitle) whyTitle.innerHTML=t.whyTitle;
+    const whyBody=$('#s-why .body-text'); if(whyBody) whyBody.textContent=t.whyBody;
+    $$('#s-why .stat-copy').forEach((el,i)=>{ if(t.stats[i]) el.innerHTML='<strong>'+t.stats[i][0]+'</strong>'+t.stats[i][1]; });
+    $$('.feat-item').forEach((el,i)=>{ if(t.features[i]){ el.querySelector('.feat-title').textContent=t.features[i][0]; el.querySelector('.feat-desc').textContent=t.features[i][1]; el.querySelector('.feat-tag').textContent=t.features[i][2]; }});
+    const impactLabel=$('.impact-label'); if(impactLabel) impactLabel.textContent=t.impactLabel;
+    const impactTitle=$('.impact-title'); if(impactTitle) impactTitle.innerHTML=t.impactTitle;
+    $$('.imp-label').forEach((el,i)=>{ if(t.impactStats[i]) el.innerHTML=t.impactStats[i]; });
+    if(t.impactUnits){ $$('.imp-num .imp-unit').forEach((el,i)=>{ const u=t.impactUnits[i]; if(typeof u==='string') el.textContent=u; }); }
+    if(tags[1]) tags[1].textContent=t.caseTag;
+    const caseTitle=$('.case-big'); if(caseTitle) caseTitle.innerHTML=t.caseTitle;
+    const caseBefore=$('.case-tag-label'); if(caseBefore) caseBefore.textContent=t.caseBefore;
+    const quote=$('.case-quote'); if(quote) quote.textContent=t.quote;
+    $$('.c-label').forEach((el,i)=>{ if(t.caseRows[i]) el.innerHTML=t.caseRows[i]; });
+    const caseCTA=$('.case-cta'); if(caseCTA && caseCTA.childNodes[0]) caseCTA.childNodes[0].textContent=t.caseCTA+' ';
+    if(tags[2]) tags[2].textContent=t.modulesTag;
+    const modTitle=$('#s-modules .big-title'); if(modTitle) modTitle.innerHTML=t.modulesTitle;
+    const modSub=$('.mod-sub'); if(modSub) modSub.textContent=t.modulesSub;
+    $$('.mod-card').forEach((el,i)=>{ if(t.modules[i]){ el.querySelector('.mod-name').textContent=t.modules[i][0]; el.querySelector('.mod-desc').textContent=t.modules[i][1]; }});
+    const ctaMono=$('.cta-mono'); if(ctaMono) ctaMono.textContent=t.ctaMono;
+    const ctaTitle=$('.cta-h'); if(ctaTitle) ctaTitle.innerHTML=t.ctaTitle;
+    const ctaBtns=$$('.cta-row a'); ctaBtns.forEach((a,i)=>{ if(t.ctaBtns[i]) a.textContent=t.ctaBtns[i]; });
+    const scheduleCta=$('#scheduleCta'); 
+    if(scheduleCta) scheduleCta.href = '#';
+    const navDemoLink=$('#navDemo');
+    if(navDemoLink) navDemoLink.href = '#';
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    const btn=$('#langToggle');
+    if(btn) btn.addEventListener('click',()=>setLang(current==='es'?'en':'es'));
+    setLang(current);
+
+    /* Smooth scroll fallback without GSAP ScrollTo plugin */
+    document.querySelectorAll('a[href^="#"]').forEach(a=>{
+      a.addEventListener('click',e=>{
+        const target=document.querySelector(a.getAttribute('href'));
+        if(!target) return;
+        e.preventDefault();
+        target.scrollIntoView({behavior:'smooth',block:'start'});
+      },{capture:true});
+    });
+  });
+})();
+</script>
+
+
+<script>
+/* ══ GOOGLE CALENDAR APPOINTMENT MODAL ═════════════════ */
+(function(){
+  const modal = document.getElementById('appointmentModal');
+  const closeBtn = document.getElementById('appointmentClose');
+
+  function openCalendar(e){
+    if(e) e.preventDefault();
+    if(!modal) return;
+    modal.classList.add('is-open');
+    modal.setAttribute('aria-hidden','false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeCalendar(){
+    if(!modal) return;
+    modal.classList.remove('is-open');
+    modal.setAttribute('aria-hidden','true');
+    document.body.style.overflow = '';
+  }
+
+  document.addEventListener('click', function(e){
+    const trigger = e.target.closest('.js-open-calendar');
+    if(trigger) openCalendar(e);
+    if(e.target === modal) closeCalendar();
+  });
+
+  if(closeBtn) closeBtn.addEventListener('click', closeCalendar);
+
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') closeCalendar();
+  });
+})();
+</script>
+
+
+<script>
+/* Mobile layout safety */
+window.addEventListener('resize', () => {
+  if (window.ScrollTrigger) {
+    clearTimeout(window.__archverseResizeTimer);
+    window.__archverseResizeTimer = setTimeout(() => ScrollTrigger.refresh(), 250);
+  }
+});
+</script>
+
+</body>
+</html>
