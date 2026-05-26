@@ -1,0 +1,215 @@
+// Shared project data + i18n for both variations
+window.PROJECTS = [
+  {
+    id:'villa-vicario',
+    no:'01',
+    cat:'residential',
+    title:{es:'Villa Vicario', en:'Villa Vicario'},
+    year:'2023 — 2025',
+    loc:{es:'Centro Histórico, Mazatlán', en:'Historic Center, Mazatlán'},
+    area:{es:'27 hogares', en:'27 homes'},
+    status:{key:'completed', es:'Completado', en:'Completed'},
+    desc:{
+      es:'Un edificio de principios del siglo XX en el Centro Histórico de Mazatlán, convertido en 27 departamentos. Se conservaron los muros originales, se recuperaron los patios y se adaptó la distribución para uso contemporáneo. La esquina sigue siendo la misma esquina.',
+      en:'An early-20th-century building in Mazatlán\'s Historic Center, converted into 27 apartments. Original walls preserved, courtyards restored, and the layout adapted for contemporary living. The corner is still the same corner.'
+    },
+    images:[
+      'https://lh3.googleusercontent.com/d/1LUV_Xd1yNvANIkRM9Hvo6UVWSUmmEDB8',
+      'https://lh3.googleusercontent.com/d/1lPwgz49TXrzSSkX7sHkPm1xaeYtYBxa5',
+      'https://lh3.googleusercontent.com/d/1XG7jWFQecRK9G26N2zYJSXaRjXK3HpT_',
+      'https://lh3.googleusercontent.com/d/1j1EXtT-GLH2g_9O4SrnhRk7AfjHMTfTz',
+      'https://lh3.googleusercontent.com/d/1yeOx7qfhFasRhO5Dh9v4lA4fFxWUGTeu',
+      'https://lh3.googleusercontent.com/d/1JZEpMMrbC31kknGxCbmDOTBoC9PMBpdn',
+      'https://lh3.googleusercontent.com/d/1LkxpN9tSud7ZIEt37cLnDTz9dWohxtGG'
+    ]
+  },
+  {
+    id:'la-ventana',
+    no:'02',
+    cat:'residential',
+    title:{es:'La Ventana', en:'La Ventana'},
+    year:'2024',
+    loc:{es:'La Ventana, BCS', en:'La Ventana, BCS'},
+    area:{es:'3 módulos en ladera', en:'3 hillside modules'},
+    status:{key:'project', es:'En proyecto', en:'In progress'},
+    desc:{
+      es:'Tres casas en ladera en La Ventana, BCS. La pendiente definió el escalonamiento de los volúmenes, la ubicación de la alberca compartida y cómo organizar el acceso. La topografía como punto de partida, no como obstáculo.',
+      en:'Three hillside houses in La Ventana, BCS. The slope defined how the volumes stack, where the shared pool sits, and how to organize access. Topography as a starting point, not a problem to solve.'
+    },
+    images:[
+      'https://lh3.googleusercontent.com/d/14YEmmFxG7kIPMIByaSTOP7XXtJYD-RdZ',
+      'https://lh3.googleusercontent.com/d/14LAoMHf5GB1QJU2POgINqgTN67kU8uFp',
+      'https://lh3.googleusercontent.com/d/1HvVlNlwWE-TKOdkIzo1Y3k4pfMGbgoqy',
+      'https://lh3.googleusercontent.com/d/1EBapcoHpXBEMEl8_avfu20T8hTF83SLw',
+      'https://lh3.googleusercontent.com/d/1UTQHqABBXS12AUe9tdIyyEIN44s2lOI8',
+      'https://lh3.googleusercontent.com/d/1jejuail49lf60mMK45oW0usOUcXub_b1',
+      'https://lh3.googleusercontent.com/d/1das1xyksHZFdUzVFWgol5zmgSN25_lVc'
+    ]
+  },
+  {
+    id:'casa-merida',
+    no:'03',
+    cat:'residential',
+    title:{es:'Casa Mérida 01', en:'Casa Mérida 01'},
+    year:'2021',
+    loc:{es:'Mérida, Yucatán', en:'Mérida, Yucatán'},
+    area:{es:'PB + Alta · doble altura', en:'Ground + upper · double height'},
+    status:{key:'project', es:'En proyecto', en:'In progress'},
+    desc:{
+      es:'Casa de dos niveles en Mérida. Planta baja abierta con doble altura al centro; la planta alta se organiza alrededor del vacío. Carpintería de cedro en café oscuro, mármol Carrara en los pisos y terraza-jardín en la azotea.',
+      en:'Two-level house in Mérida. Open ground floor with a double-height volume at its core; the upper floor wraps around the void. Dark cedar millwork, Carrara marble floors, and a rooftop garden terrace.'
+    },
+    images:[
+      'https://lh3.googleusercontent.com/d/1LCCNf7uttWGgl5KyitrlBdiS2O7S2Y96',
+      'https://lh3.googleusercontent.com/d/19zooHMSdrpEZQKnbGmo9yWVy-3yUv_9h'
+    ]
+  },
+  {
+    id:'nave-colectiva',
+    no:'04',
+    cat:'urban',
+    title:{es:'XGMA', en:'XGMA'},
+    year:'2023',
+    loc:{es:'Mazatlán, Sinaloa', en:'Mazatlán, Sinaloa'},
+    area:{es:'Locales + nave comercial', en:'Retail + commercial warehouse'},
+    status:{key:'project', es:'En proyecto', en:'In progress'},
+    desc:{
+      es:'Nave industrial existente en Mazatlán, reconvertida en tienda de maquinaria y locales comerciales. El reto fue organizar exhibición, almacenamiento y circulación de montacargas dentro de la misma planta, sin tocar la estructura original.',
+      en:'An existing industrial warehouse in Mazatlán, repurposed as a machinery store and commercial units. The challenge: fitting display, storage, and forklift circulation into one floor plan without touching the original structure.'
+    },
+    images:[
+      'https://lh3.googleusercontent.com/d/1ZcBpljpgWW8ulOCN3iqJcrs_ykCb7hou'
+    ]
+  },
+  {
+    id:'calle-ancla',
+    no:'05',
+    cat:'cultural',
+    title:{es:'Calle Ancla', en:'Calle Ancla'},
+    year:'2023',
+    loc:{es:'Mazatlán, Sinaloa', en:'Mazatlán, Sinaloa'},
+    area:{es:'Vía recreativa', en:'Recreational corridor'},
+    status:{key:'concept', es:'Concepto', en:'Concept'},
+    desc:{
+      es:'Un corredor urbano en Mazatlán que funciona como estacionamiento informal. La propuesta lo convierte en vía recreativa: pavimento compartido, vegetación, áreas de descanso y continuidad de extremo a extremo. Proyecto conceptual.',
+      en:'An urban corridor in Mazatlán currently used as informal parking. The proposal turns it into a shared recreational lane: continuous paving, planting, rest areas, and end-to-end connectivity. Conceptual project.'
+    },
+    images:[
+      'https://lh3.googleusercontent.com/d/14biADbXv4cD8ftSHbGOzX5ojFloKdyHW',
+      'https://lh3.googleusercontent.com/d/1JqRCJuKmIDAzdLCFoA84cjO21Nk_-dMV',
+      'https://lh3.googleusercontent.com/d/1YdU87fIe05x5jaSdUC4IU7HZkjLPI6Yj',
+      'https://lh3.googleusercontent.com/d/1GyKB3oy_-4TS33nSQx4-bmmL9T1e1oMP',
+      'https://lh3.googleusercontent.com/d/1WfVO7xYT0jy3tYw0o60vYlUnyIE_nnyA',
+      'https://lh3.googleusercontent.com/d/1uYalrg7hlxiG_GlqqX6-lHP5v0jfi2qx'
+    ]
+  }
+];
+
+window.I18N = {
+  es:{
+    'pre-l':'Estudio · Mazatlán · MX',
+    'pre-r':'Edición 2026 / V·01',
+    'nav-work':'Obras','nav-about':'Perfil','nav-career':'Trayectoria','nav-contact':'Contacto',
+    'hero-meta-l':'Mazatlán · 23.2494° N',
+    'hero-meta-c':'Arquitectura · 2015 →',
+    'hero-meta-r':'Portafolio · MMXXVI',
+    'hero-eye':'Arquitecto · Diseño y desarrollo de proyectos',
+    'hero-tag':'Diez años convirtiendo el sitio, el programa y la materia en proyectos arquitectónicos que se construyen — desde la idea inicial hasta el plano ejecutivo.',
+    'hero-cap-l':'Fig. 001 / Retrato del autor',
+    'hero-cap-r':'Mazatlán, MX',
+    'scroll-cue':'Descender',
+    'marq-1':'Diseño arquitectónico','marq-2':'Proyecto ejecutivo','marq-3':'Coordinación','marq-4':'Visualización en tiempo real','marq-5':'Vivienda · Cultural · Urbano',
+    'marq-1b':'Diseño arquitectónico','marq-2b':'Proyecto ejecutivo','marq-3b':'Coordinación','marq-4b':'Visualización en tiempo real','marq-5b':'Vivienda · Cultural · Urbano',
+    'work-no':'§ I · Obra seleccionada',
+    'work-title':'Índice de <i>proyectos</i>',
+    'work-aside':'Cinco proyectos seleccionados entre 2021 y 2025 · Vivienda, cultura y urbanismo',
+    'f-all':'Todos · 05','f-r':'Residencial','f-c':'Cultural','f-u':'Urbano',
+    'feat-eye':'Caso destacado · Nº 01',
+    'feat-title':'Restaurar la <i>memoria</i><br>de la esquina.',
+    'feat-cap-l':'Fig. 002 / Patio reconstruido · Villa Vicario',
+    'feat-cap-r':'27 hogares · Centro Histórico',
+    'feat-quote':'Conservar una esquina con memoria sin convertirla en una postal: <i>devolver los patios, las alturas y la sombra a quien hoy va a vivir ahí.</i>',
+    'feat-info-1':'Desarrollo residencial de restauración patrimonial en una de las esquinas más emblemáticas del Centro Histórico. La intervención reinterpreta un edificio con memoria para crear una vida contemporánea con todas las comodidades, conservando los muros, los patios de encuentro y la atmósfera del barrio.',
+    'feat-info-2':'Coordinación integral desde el levantamiento hasta el proyecto ejecutivo. Patrimonio, vivienda y comercio integrados en una sola pieza urbana.',
+    'about-no':'§ II · Perfil',
+    'about-title':'Quien <i>dibuja.</i>',
+    'about-aside':'Mazatlán, Sinaloa · 2015–presente · Disponible para nuevos proyectos',
+    'about-cap-l':'Retrato · Estudio','about-cap-r':'2026',
+    'about-p1':'Soy Jesús Ornelas, arquitecto en Mazatlán. Lo que más me gusta de este trabajo es acompañar un proyecto desde el primer boceto hasta que alguien vive o trabaja ahí.',
+    'about-p2':'Diez años en tres despachos distintos me dieron perspectiva de escala: vivienda unifamiliar, torres de departamentos, condohoteles y restauración patrimonial. Siempre desde el inicio hasta el plano ejecutivo.',
+    'about-p3':'Lo que me ocupa en cada proyecto es lo mismo: que la proporción funcione, que la luz entre bien y que los materiales tengan sentido en ese lugar y presupuesto.',
+    'about-p4':'En 2026 fundé Archverse, plataforma de maquetas virtuales interactivas para desarrollos inmobiliarios. Convertimos proyectos en experiencias navegables — tours 3D, simulador de unidades y financiamiento — para que el comprador tome la decisión antes del primer ladrillo.',
+    'fact-1':'Años en la disciplina','fact-2':'Hogares · Villa Vicario','fact-3':'Fundé Archverse','fact-4':'Despachos · 1 propio',
+    'career-no':'§ III · Trayectoria',
+    'career-title':'Diez años, <i>tres</i> despachos.',
+    'career-aside':'Diseño, coordinación y dirección de proyectos arquitectónicos',
+    'cv-1-role':'Fundador. Diseño y coordinación de proyectos arquitectónicos.',
+    'cv-1-loc':'Mazatlán · Estudio propio',
+    'cv-2-role':'Project Manager. Coordinación de equipos, procesos, tiempos, costos y control de calidad.',
+    'cv-2-loc':'Mazatlán',
+    'cv-3-role':'Diseñador arquitectónico. Desde el concepto hasta el proyecto ejecutivo, modelado 3D y ajustes en obra.',
+    'cv-3-loc':'Sinaloa',
+    'cv-4-role':'Licenciatura en Arquitectura. Universidad Autónoma de Sinaloa.',
+    'cv-4-loc':'Formación',
+    'c-no':'§ IV · Contacto','c-title':'Hablemos.',
+    'c-aside':'Para encargos, colaboraciones o un café en Mazatlán',
+    'c-li':'Bajo solicitud','c-ig':'Bajo solicitud',
+    'form-name':'Nombre','form-email':'Correo','form-org':'Estudio','form-msg':'Mensaje','form-submit':'Enviar mensaje  →',
+    'ft-l':'© 2026 · Jesús Antonio Ornelas · Todos los derechos reservados',
+    'ft-r':'Disponible · Q1 2026',
+    'm-year':'Año','m-loc':'Ubicación','m-area':'Programa','m-status':'Estado'
+  },
+  en:{
+    'pre-l':'Studio · Mazatlán · MX',
+    'pre-r':'Edition 2026 / V·01',
+    'nav-work':'Work','nav-about':'About','nav-career':'Career','nav-contact':'Contact',
+    'hero-meta-l':'Mazatlán · 23.2494° N',
+    'hero-meta-c':'Architecture · 2015 →',
+    'hero-meta-r':'Portfolio · MMXXVI',
+    'hero-eye':'Architect · Design & project development',
+    'hero-tag':'Ten years turning site, program, and matter into architectural projects that get built — from the first sketch to construction drawings.',
+    'hero-cap-l':'Fig. 001 / Author portrait',
+    'hero-cap-r':'Mazatlán, MX',
+    'scroll-cue':'Scroll',
+    'marq-1':'Architectural design','marq-2':'Construction drawings','marq-3':'Coordination','marq-4':'Real-time visualization','marq-5':'Housing · Cultural · Urban',
+    'marq-1b':'Architectural design','marq-2b':'Construction drawings','marq-3b':'Coordination','marq-4b':'Real-time visualization','marq-5b':'Housing · Cultural · Urban',
+    'work-no':'§ I · Selected work',
+    'work-title':'Index of <i>projects</i>',
+    'work-aside':'Five selected projects between 2021 and 2025 · Housing, culture and urbanism',
+    'f-all':'All · 05','f-r':'Residential','f-c':'Cultural','f-u':'Urban',
+    'feat-eye':'Featured · Nº 01',
+    'feat-title':'Restoring the <i>memory</i><br>of the corner.',
+    'feat-cap-l':'Fig. 002 / Rebuilt courtyard · Villa Vicario',
+    'feat-cap-r':'27 homes · Historic Center',
+    'feat-quote':'To preserve a corner with memory without turning it into a postcard: <i>to return the courtyards, the heights, and the shade to the people who will live there now.</i>',
+    'feat-info-1':'Heritage-restoration development on one of the most emblematic corners of the Historic Center. The intervention reinterprets a building with memory to create contemporary life, preserving walls, courtyards, and the neighborhood\'s atmosphere.',
+    'feat-info-2':'Full coordination from survey to construction drawings. Heritage, housing, and retail integrated into a single urban piece.',
+    'about-no':'§ II · Profile',
+    'about-title':'Who <i>draws.</i>',
+    'about-aside':'Mazatlán, Sinaloa · 2015–present · Open to new projects',
+    'about-cap-l':'Portrait · Studio','about-cap-r':'2026',
+    'about-p1':'I\'m Jesús Ornelas, an architect based in Mazatlán. What I like most about this work is following a project from the first sketch to the point where someone actually lives or works there.',
+    'about-p2':'Ten years across three different studios gave me a range of scale: single-family homes, apartment towers, condo-hotel developments, and heritage restoration. Always in from the start through the construction drawings.',
+    'about-p3':'What I keep working through on every project is the same: getting the proportions right, letting light in well, and choosing materials that make sense for that site and budget.',
+    'about-p4':'In 2026 I founded Archverse, an interactive virtual model platform for real estate developments in Mexico. We turn projects into navigable experiences — 3D tours, unit finders, and financial simulators — so buyers decide before the first brick is laid.',
+    'fact-1':'Years in the discipline','fact-2':'Homes · Villa Vicario','fact-3':'Founded Archverse','fact-4':'Studios · 1 of my own',
+    'career-no':'§ III · Career',
+    'career-title':'Ten years, <i>three</i> studios.',
+    'career-aside':'Design, coordination and direction of architectural projects',
+    'cv-1-role':'Founder. Design and coordination of architectural projects.',
+    'cv-1-loc':'Mazatlán · Own studio',
+    'cv-2-role':'Project Manager. Team coordination, processes, schedules, costs and quality control.',
+    'cv-2-loc':'Mazatlán',
+    'cv-3-role':'Architect designer. From concept to construction drawings, 3D modeling and site adjustments.',
+    'cv-3-loc':'Sinaloa',
+    'cv-4-role':'Bachelor in Architecture. Universidad Autónoma de Sinaloa.',
+    'cv-4-loc':'Education',
+    'c-no':'§ IV · Contact','c-title':'Let\'s talk.',
+    'c-aside':'For commissions, collaborations or a coffee in Mazatlán',
+    'c-li':'On request','c-ig':'On request',
+    'form-name':'Name','form-email':'Email','form-org':'Studio','form-msg':'Message','form-submit':'Send message  →',
+    'ft-l':'© 2026 · Jesús Antonio Ornelas · All rights reserved',
+    'ft-r':'Available · Q1 2026',
+    'm-year':'Year','m-loc':'Location','m-area':'Program','m-status':'Status'
+  }
+};
