@@ -3,21 +3,19 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<meta name="description" content="ArchVerse crea maquetas virtuales interactivas para desarrolladores inmobiliarios e inmobiliarias. Vende antes de construir con recorridos 3D, orientación solar, buscador de unidades, amenidades y simulación financiera."/>
+<meta name="description" content="Maquetas virtuales interactivas para desarrollos inmobiliarios: recorridos 3D en tiempo real, buscador de unidades y simulador financiero. Vende antes de construir."/>
 <meta name="keywords" content="maquetas virtuales, maquetas virtuales inmobiliarias, recorridos 3D, visualización arquitectónica, desarrollos inmobiliarios, preventa inmobiliaria, renders interactivos, Unreal Engine arquitectura, archviz México, inmobiliarias México"/>
 <meta name="author" content="ArchVerse"/>
-<meta name="robots" content="index, follow"/>
-<meta property="og:title" content="ArchVerse | Maquetas virtuales interactivas para desarrollos inmobiliarios"/>
-<meta property="og:description" content="Vende antes de construir con experiencias inmobiliarias interactivas: recorridos 3D, orientación solar, buscador de unidades, amenidades y simulación financiera."/>
-<meta property="og:type" content="website"/>
-<meta property="og:locale" content="es_MX"/>
-<meta name="twitter:card" content="summary_large_image"/>
-<title>ArchVerse | Maquetas virtuales interactivas para desarrollos inmobiliarios</title>
+<meta name="robots" content="index, follow, max-image-preview:large"/>
+<link rel="canonical" href="https://archverse.studio/"/>
+<title>Maquetas virtuales interactivas para desarrollos inmobiliarios | ArchVerse</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link rel="preconnect" href="https://player.vimeo.com"/>
+<link rel="preconnect" href="https://i.vimeocdn.com"/>
+<link rel="preconnect" href="https://res.cloudinary.com"/>
+<link rel="dns-prefetch" href="https://f.vimeocdn.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Syne+Mono&display=swap" rel="stylesheet"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
@@ -461,6 +459,12 @@ nav{
 .case-quote{
   font-size:clamp(17px,1.8vw,22px);font-weight:400;line-height:1.55;
   color:rgba(255,255,255,.8);max-width:52ch;font-style:italic;
+}
+.case-quote-author{
+  margin-top:14px;
+  font-family:'Syne Mono',monospace;
+  font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--acid);
 }
 .case-data{
   background:#1e1e1e;
@@ -976,6 +980,68 @@ nav{
   .seo-strip-inner{font-size:8px;letter-spacing:.14em;animation-duration:34s;}
 }
 
+
+/* ── FAQ ─────────────────────────────── */
+#s-faq{padding:140px 0;border-top:1px solid var(--line);min-height:auto;}
+.faq-list{max-width:860px;margin:56px auto 0;}
+.faq-item{border-top:1px solid var(--line);}
+.faq-item:last-child{border-bottom:1px solid var(--line);}
+.faq-item summary{
+  list-style:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:space-between;gap:24px;
+  padding:26px 4px;
+  font-size:clamp(16px,1.6vw,20px);font-weight:600;letter-spacing:-.01em;
+  color:var(--white);transition:color .25s;
+}
+.faq-item summary::-webkit-details-marker{display:none;}
+.faq-item summary::after{
+  content:'+';flex-shrink:0;
+  font-size:22px;font-weight:400;color:var(--acid);
+  transition:transform .3s cubic-bezier(.23,1,.32,1);
+}
+.faq-item[open] summary::after{transform:rotate(45deg);}
+.faq-item summary:hover{color:var(--acid);}
+.faq-a{
+  font-size:14.5px;line-height:1.85;color:var(--muted);
+  padding:0 4px 28px;max-width:64ch;
+}
+@media(max-width:900px){
+  #s-faq{padding:84px 0;}
+  .faq-item summary{padding:20px 2px;font-size:15px;}
+}
+
+/* ── SKIP LINK + FOCUS ───────────────── */
+.skip-link{
+  position:fixed;top:-60px;left:16px;z-index:9500;
+  background:var(--gradient);color:var(--void);
+  padding:12px 20px;border-radius:100px;
+  font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  transition:top .25s;
+}
+.skip-link:focus{top:16px;}
+a:focus-visible,button:focus-visible,summary:focus-visible{
+  outline:2px solid var(--acid);outline-offset:3px;border-radius:6px;
+}
+
+/* ── WHATSAPP FLOTANTE (móvil) ───────── */
+.wa-float{
+  display:none;
+  position:fixed;right:16px;bottom:18px;z-index:600;
+  width:54px;height:54px;border-radius:50%;
+  align-items:center;justify-content:center;
+  background:var(--gradient);
+  box-shadow:0 10px 32px rgba(0,0,0,.45),0 0 32px rgba(125,211,252,.28);
+}
+.wa-float svg{width:26px;height:26px;fill:var(--void);}
+@media(max-width:900px){
+  .wa-float{display:flex;}
+}
+
+/* ── REDUCED MOTION ──────────────────── */
+@media(prefers-reduced-motion:reduce){
+  .marquee-track,.seo-strip-inner,.scroll-ticker::after,.mod-orbit::before{animation:none!important;}
+  *{scroll-behavior:auto!important;}
+}
 
 /* ── FOOTER ──────────────────────────── */
 footer{
@@ -1644,9 +1710,19 @@ html, body{
 {
   "@context": "https://schema.org",
   "@type": "ProfessionalService",
+  "@id": "https://archverse.studio/#organization",
   "name": "ArchVerse",
-  "description": "Maquetas virtuales interactivas para desarrolladores inmobiliarios e inmobiliarias.",
-  "areaServed": "México",
+  "url": "https://archverse.studio/",
+  "logo": "https://res.cloudinary.com/dodxcdg1k/image/upload/v1778188979/favicon-512_inpwhx.png",
+  "image": "https://res.cloudinary.com/dodxcdg1k/image/upload/v1778189014/archverse-og_slmw1o.png",
+  "description": "Maquetas virtuales interactivas para desarrolladores inmobiliarios e inmobiliarias: recorridos 3D en tiempo real, buscador de unidades, simulador financiero y orientación solar.",
+  "areaServed": ["México", "Estados Unidos"],
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Mazatlán",
+    "addressRegion": "Sinaloa",
+    "addressCountry": "MX"
+  },
   "serviceType": [
     "Maquetas virtuales inmobiliarias",
     "Recorridos 3D interactivos",
@@ -1655,7 +1731,26 @@ html, body{
     "Orientación solar para proyectos inmobiliarios"
   ],
   "email": "ornelarq@gmail.com",
-  "telephone": "+526691011144"
+  "telephone": "+526691011144",
+  "sameAs": [
+    "https://instagram.com/ojo_salado",
+    "https://www.linkedin.com/in/jes%C3%BAs-ornelas"
+  ]
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type":"Question","name":"¿Qué es una maqueta virtual interactiva?","acceptedAnswer":{"@type":"Answer","text":"Es una experiencia 3D en tiempo real de un desarrollo inmobiliario, construida en Unreal Engine 5. El comprador recorre el proyecto, consulta unidades disponibles, simula mensualidades y explora amenidades desde el navegador, antes de que exista el edificio."}},
+    {"@type":"Question","name":"¿Mis clientes necesitan instalar algo?","acceptedAnswer":{"@type":"Answer","text":"No. La plataforma corre 100% en el navegador, en computadora, tablet o celular. Solo se comparte un link, ideal para compradores remotos o extranjeros."}},
+    {"@type":"Question","name":"¿Cuánto tarda en estar lista?","acceptedAnswer":{"@type":"Answer","text":"Entre 3 y 5 semanas según el alcance del proyecto, trabajando por fases para tener material comercial utilizable desde las primeras semanas."}},
+    {"@type":"Question","name":"¿Qué necesito entregar de mi proyecto?","acceptedAnswer":{"@type":"Answer","text":"Planos arquitectónicos, renders o modelo 3D si existe, lista de unidades con precios y material de marca."}},
+    {"@type":"Question","name":"¿Sirve para preventa?","acceptedAnswer":{"@type":"Answer","text":"Es su caso de uso ideal. La maqueta virtual hace tangible el proyecto en preventa y reduce la fricción de decisión del comprador."}},
+    {"@type":"Question","name":"¿El buscador de unidades se actualiza con mi inventario?","acceptedAnswer":{"@type":"Answer","text":"Sí. Disponibilidad, precios y estatus de cada unidad se mantienen actualizados para reflejar el inventario real durante la venta."}}
+  ]
 }
 </script>
 
@@ -1687,8 +1782,11 @@ content="https://res.cloudinary.com/dodxcdg1k/image/upload/v1778189014/archverse
 <meta property="og:image:height" content="630"/>
 
 <meta property="og:type" content="website"/>
+<meta property="og:site_name" content="ArchVerse"/>
 <meta property="og:locale" content="es_MX"/>
-<meta property="og:url" content="https://archverse.studio"/>
+<meta property="og:locale:alternate" content="en_US"/>
+<meta property="og:url" content="https://archverse.studio/"/>
+<meta property="og:image:alt" content="ArchVerse — Maquetas virtuales interactivas para desarrollos inmobiliarios"/>
 
 <!-- ───────────── TWITTER / X ───────────── -->
 <meta name="twitter:card" content="summary_large_image"/>
@@ -1708,9 +1806,10 @@ content="https://res.cloudinary.com/dodxcdg1k/image/upload/v1778189014/archverse
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 
+<noscript><style>#loader{display:none!important}.js-up,.js-fade{opacity:1!important;transform:none!important}.feat-img.active{opacity:1}</style></noscript>
 </head>
 <body>
-<h1 class="sr-seo">Maquetas virtuales interactivas para desarrollos inmobiliarios en México</h1>
+<a class="skip-link" href="#s-why">Saltar al contenido</a>
 
 
 <!-- APPOINTMENT MODAL -->
@@ -1723,7 +1822,7 @@ content="https://res.cloudinary.com/dodxcdg1k/image/upload/v1778189014/archverse
     <iframe
       class="appointment-frame"
       id="appointmentFrame"
-      src="https://calendly.com/ornelarq/new-meeting?embed_domain=archverse&embed_type=Inline"
+      data-src="https://calendly.com/ornelarq/new-meeting?embed_domain=archverse.studio&embed_type=Inline"
       title="Calendario para agendar cita ArchVerse"
       loading="lazy">
     </iframe>
@@ -1753,6 +1852,7 @@ content="https://res.cloudinary.com/dodxcdg1k/image/upload/v1778189014/archverse
       <li><a href="#s-features">Plataforma</a></li>
       <li><a href="#s-case">Caso</a></li>
       <li><a href="#s-modules">Módulos</a></li>
+      <li><a href="#s-faq">FAQ</a></li>
     </ul>
     <button class="lang-toggle" id="langToggle" type="button" aria-label="Cambiar idioma">EN</button>
     <a href="#" class="nav-pill js-open-calendar" id="navDemo">Agendar cita →</a>
@@ -1801,7 +1901,7 @@ content="https://res.cloudinary.com/dodxcdg1k/image/upload/v1778189014/archverse
 </section>
 
 <!-- MARQUEE -->
-<div class="marquee-wrap">
+<div class="marquee-wrap" aria-hidden="true">
   <div class="marquee-track">
     <span class="mq-item">Recorrido 3D<span class="mq-dot"></span></span>
     <span class="mq-item">Orientación Solar<span class="mq-dot"></span></span>
@@ -1831,7 +1931,7 @@ content="https://res.cloudinary.com/dodxcdg1k/image/upload/v1778189014/archverse
       <div>
         <p class="tag js-up">Propuesta de valor</p>
         <h2 class="big-title js-up">
-          De "Se ve bien"<br/>a<br/><em>"Lo quiero!"</em>
+          De "Se ve bien"<br/>a<br/><em>"¡Lo quiero!"</em>
         </h2>
         <p class="body-text js-up">
           Ya no presentas un proyecto. Presentas una ventaja comercial que el comprador puede explorar, sentir y recordar. ArchVerse reemplaza renders sueltos, PDFs y explicaciones interminables con una sola experiencia inmersiva que guía la decisión — sin que tengas que estar ahí explicando.
@@ -1857,26 +1957,25 @@ content="https://res.cloudinary.com/dodxcdg1k/image/upload/v1778189014/archverse
 
 <!-- ── FEATURES STICKY (desktop) ── -->
 <section class="section" id="s-features">
-  <span class="feat-mobile-header">La plataforma</span>
   <div class="features-sticky">
     <div class="feat-left">
       <div class="feat-img-stack">
         <!-- ★ INSTRUCCIONES: reemplaza VIDEO_ID_1…5 con el ID de tu video de YouTube      -->
         <!--   Ejemplo: youtube.com/watch?v=dQw4w9WgXcQ → el ID es "dQw4w9WgXcQ"          -->
         <div class="feat-img active" id="fi-0" data-yt-id="1195424235">
-          <iframe src="https://player.vimeo.com/video/1198424397?autoplay=1&muted=1&loop=1&background=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" allowfullscreen title="Recorrido 3D"></iframe>
+          <iframe data-src="https://player.vimeo.com/video/1198424397?autoplay=1&muted=1&loop=1&background=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" allowfullscreen loading="lazy" title="Recorrido 3D"></iframe>
         </div>
         <div class="feat-img" id="fi-1" data-yt-id="1195424656">
-          <iframe src="https://player.vimeo.com/video/1195424656?h=deb41dae85&autoplay=1&muted=1&loop=1&background=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" allowfullscreen title="Galería y burbujas 360"></iframe>
+          <iframe data-src="https://player.vimeo.com/video/1195424656?h=deb41dae85&autoplay=1&muted=1&loop=1&background=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" allowfullscreen loading="lazy" title="Galería y burbujas 360"></iframe>
         </div>
         <div class="feat-img" id="fi-2" data-yt-id="1195424925">
-          <iframe src="https://player.vimeo.com/video/1198281799?autoplay=1&muted=1&loop=1&background=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" allowfullscreen title="Entorno urbano"></iframe>
+          <iframe data-src="https://player.vimeo.com/video/1198281799?autoplay=1&muted=1&loop=1&background=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" allowfullscreen loading="lazy" title="Entorno urbano"></iframe>
         </div>
         <div class="feat-img" id="fi-3" data-yt-id="1195425171">
-          <iframe src="https://player.vimeo.com/video/1198281796?autoplay=1&muted=1&loop=1&background=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" allowfullscreen title="Buscador de unidades"></iframe>
+          <iframe data-src="https://player.vimeo.com/video/1198281796?autoplay=1&muted=1&loop=1&background=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" allowfullscreen loading="lazy" title="Buscador de unidades"></iframe>
         </div>
         <div class="feat-img" id="fi-4" data-yt-id="1195425262">
-          <iframe src="https://player.vimeo.com/video/1198425964?autoplay=1&muted=1&loop=1&background=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" allowfullscreen title="Solar y amenidades"></iframe>
+          <iframe data-src="https://player.vimeo.com/video/1198425964?autoplay=1&muted=1&loop=1&background=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" allowfullscreen loading="lazy" title="Solar y amenidades"></iframe>
         </div>
       </div>
     </div>
@@ -1885,7 +1984,7 @@ content="https://res.cloudinary.com/dodxcdg1k/image/upload/v1778189014/archverse
       <div class="feat-item active" data-img="0">
         <div class="feat-num">01 / 05</div>
         <h3 class="feat-title">Recorrido 3D en tiempo real</h3>
-        <p class="feat-desc">Primera persona, orbital o teletransporte. El comprador navega cada metro cuadrado antes de que el edificio exista — desde cualquier browser, sin instalar nada.</p>
+        <p class="feat-desc">Primera persona, orbital o teletransporte. El comprador navega cada metro cuadrado antes de que el edificio exista — desde cualquier navegador, sin instalar nada.</p>
         <span class="feat-tag">WebGL · Pixel Streaming</span>
       </div>
       <div class="feat-item" data-img="1">
@@ -1898,7 +1997,7 @@ content="https://res.cloudinary.com/dodxcdg1k/image/upload/v1778189014/archverse
         <div class="feat-num">03 / 05</div>
         <h3 class="feat-title">Entorno urbano + Topografía</h3>
         <p class="feat-desc">Puntos de interés, accesos y contexto geoespacial real. Convierte la ubicación en un argumento de venta, no solo en un dato técnico.</p>
-        <span class="feat-tag">Topografia · Real</span>
+        <span class="feat-tag">Topografía · Real</span>
       </div>
       <div class="feat-item" data-img="3">
         <div class="feat-num">04 / 05</div>
@@ -1924,17 +2023,17 @@ content="https://res.cloudinary.com/dodxcdg1k/image/upload/v1778189014/archverse
 
     <div class="fmob-card">
       <div class="fmob-video-box">
-        <iframe src="https://player.vimeo.com/video/1195424235?h=24f6d9b59d&title=0&byline=0&portrait=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" allowfullscreen title="Recorrido 3D"></iframe>
+        <iframe data-src="https://player.vimeo.com/video/1195424235?h=24f6d9b59d&title=0&byline=0&portrait=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" allowfullscreen loading="lazy" title="Recorrido 3D"></iframe>
       </div>
       <div class="fmob-num">01 / 05</div>
       <h3 class="fmob-title">Recorrido 3D en tiempo real</h3>
-      <p class="fmob-desc">Primera persona, orbital o teletransporte. El comprador navega cada metro cuadrado antes de que el edificio exista — desde cualquier browser, sin instalar nada.</p>
+      <p class="fmob-desc">Primera persona, orbital o teletransporte. El comprador navega cada metro cuadrado antes de que el edificio exista — desde cualquier navegador, sin instalar nada.</p>
       <span class="fmob-tag">WebGL · Pixel Streaming</span>
     </div>
 
     <div class="fmob-card">
       <div class="fmob-video-box">
-        <iframe src="https://player.vimeo.com/video/1195424656?h=deb41dae85&title=0&byline=0&portrait=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" allowfullscreen title="Galería y burbujas 360"></iframe>
+        <iframe data-src="https://player.vimeo.com/video/1195424656?h=deb41dae85&title=0&byline=0&portrait=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" allowfullscreen loading="lazy" title="Galería y burbujas 360"></iframe>
       </div>
       <div class="fmob-num">02 / 05</div>
       <h3 class="fmob-title">Galería + Burbujas 360°</h3>
@@ -1944,17 +2043,17 @@ content="https://res.cloudinary.com/dodxcdg1k/image/upload/v1778189014/archverse
 
     <div class="fmob-card">
       <div class="fmob-video-box">
-        <iframe src="https://player.vimeo.com/video/1195424925?h=3ab8de4c94&title=0&byline=0&portrait=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" allowfullscreen title="Entorno urbano"></iframe>
+        <iframe data-src="https://player.vimeo.com/video/1195424925?h=3ab8de4c94&title=0&byline=0&portrait=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" allowfullscreen loading="lazy" title="Entorno urbano"></iframe>
       </div>
       <div class="fmob-num">03 / 05</div>
       <h3 class="fmob-title">Entorno urbano + Topografía</h3>
       <p class="fmob-desc">Puntos de interés, accesos y contexto geoespacial real. Convierte la ubicación en un argumento de venta, no solo en un dato técnico.</p>
-      <span class="fmob-tag">Topografia · Real</span>
+      <span class="fmob-tag">Topografía · Real</span>
     </div>
 
     <div class="fmob-card">
       <div class="fmob-video-box">
-        <iframe src="https://player.vimeo.com/video/1195425171?h=3cec26a90d&title=0&byline=0&portrait=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" allowfullscreen title="Buscador de unidades"></iframe>
+        <iframe data-src="https://player.vimeo.com/video/1195425171?h=3cec26a90d&title=0&byline=0&portrait=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" allowfullscreen loading="lazy" title="Buscador de unidades"></iframe>
       </div>
       <div class="fmob-num">04 / 05</div>
       <h3 class="fmob-title">Buscador de unidades + Finanzas</h3>
@@ -1964,7 +2063,7 @@ content="https://res.cloudinary.com/dodxcdg1k/image/upload/v1778189014/archverse
 
     <div class="fmob-card">
       <div class="fmob-video-box">
-        <iframe src="https://player.vimeo.com/video/1195425262?h=2cc44c1535&title=0&byline=0&portrait=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" allowfullscreen title="Solar y amenidades"></iframe>
+        <iframe data-src="https://player.vimeo.com/video/1195425262?h=2cc44c1535&title=0&byline=0&portrait=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" allowfullscreen loading="lazy" title="Solar y amenidades"></iframe>
       </div>
       <div class="fmob-num">05 / 05</div>
       <h3 class="fmob-title">Solar + Amenidades</h3>
@@ -1978,9 +2077,9 @@ content="https://res.cloudinary.com/dodxcdg1k/image/upload/v1778189014/archverse
 <section class="section" id="s-impact">
   <div class="impact-num-bg">9</div>
   <div class="wrap impact-inner">
-    <p class="impact-label js-up">Impacto real · Estimado · MX</p>
+    <p class="impact-label js-up">Impacto comercial · MX</p>
     <h2 class="impact-title js-up">
-      Resultados que<br/>mueven el pipeline.
+      Una plataforma que<br/>mueve el pipeline.
     </h2>
     <div class="impact-stats">
       <div class="imp-stat">
@@ -1989,15 +2088,15 @@ content="https://res.cloudinary.com/dodxcdg1k/image/upload/v1778189014/archverse
       </div>
       <div class="imp-stat">
         <div class="imp-num"><span class="imp-val js-count" data-val="100" data-suf="%">0%</span></div>
-        <div class="imp-label">En browser,<br/>sin instalar nada</div>
+        <div class="imp-label">En navegador,<br/>sin instalar nada</div>
       </div>
       <div class="imp-stat">
-        <div class="imp-num"><span class="imp-val js-count" data-pre="+" data-val="40" data-suf="%">+0%</span></div>
-        <div class="imp-label">Más valor percibido<br/>del proyecto</div>
+        <div class="imp-num"><span class="imp-val js-count" data-val="1">0</span><span class="imp-unit" data-unit="link">link</span></div>
+        <div class="imp-label">Para compartir todo<br/>tu proyecto</div>
       </div>
       <div class="imp-stat">
-        <div class="imp-num"><span class="imp-val js-count" data-val="0">0</span></div>
-        <div class="imp-label">Mantenimiento<br/>de la plataforma</div>
+        <div class="imp-num"><span class="imp-val js-count" data-val="24" data-suf="/7">0</span></div>
+        <div class="imp-label">Tu proyecto disponible<br/>a cualquier hora</div>
       </div>
     </div>
   </div>
@@ -2014,9 +2113,10 @@ content="https://res.cloudinary.com/dodxcdg1k/image/upload/v1778189014/archverse
     </div>
     <div class="case-layout js-up">
       <div class="case-photo">
-        <img src="https://lh3.googleusercontent.com/d/1cH5C4bUqwLCaGs7grVSUoB3qUmQ6GaXQ" alt="Desarrollo"/>
+        <img src="https://lh3.googleusercontent.com/d/1cH5C4bUqwLCaGs7grVSUoB3qUmQ6GaXQ" alt="Recorrido virtual interactivo de un desarrollo residencial premium creado con ArchVerse" loading="lazy" decoding="async"/>
         <div class="case-photo-overlay">
           <p class="case-quote">"No te estoy vendiendo renders. Te estoy proponiendo una plataforma que transforma cómo tus clientes viven tu proyecto — y cómo deciden comprarlo."</p>
+          <p class="case-quote-author">Jesús Ornelas · Fundador, ArchVerse</p>
         </div>
       </div>
       <div class="case-data">
@@ -2053,19 +2153,53 @@ content="https://res.cloudinary.com/dodxcdg1k/image/upload/v1778189014/archverse
       <p class="mod-sub js-up">Cada módulo diseñado para llevar al comprador de la curiosidad a la firma.</p>
     </div>
     <div class="mod-grid">
-      <div class="mod-card js-up"><div class="mod-card-video"><iframe src="https://player.vimeo.com/video/1195424235?h=24f6d9b59d&background=1&autoplay=1&muted=1&loop=1" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div><span class="mod-orbit"></span><div class="mod-n">01</div><span class="mod-icon">🏗️</span><div class="mod-name">Recorrido 3D</div><div class="mod-desc">Primera persona o orbital — sin instalar nada. El proyecto vivo desde el día uno.</div></div>
-      <div class="mod-card js-up"><div class="mod-card-video"><iframe src="https://player.vimeo.com/video/1195424656?h=deb41dae85&background=1&autoplay=1&muted=1&loop=1" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div><span class="mod-orbit"></span><div class="mod-n">02</div><span class="mod-icon">🖼️</span><div class="mod-name">Galería visual</div><div class="mod-desc">Renders, interiores y material hero para construir deseo desde la primera impresión.</div></div>
-      <div class="mod-card js-up"><div class="mod-card-video"><iframe src="https://player.vimeo.com/video/1195424925?h=3ab8de4c94&background=1&autoplay=1&muted=1&loop=1" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div><span class="mod-orbit"></span><div class="mod-n">03</div><span class="mod-icon">🌍</span><div class="mod-name">Entorno urbano</div><div class="mod-desc">POIs, accesos y contexto geoespacial. La ubicación como argumento, no como dato.</div></div>
-      <div class="mod-card js-up"><div class="mod-card-video"><iframe src="https://player.vimeo.com/video/1195425171?h=3cec26a90d&background=1&autoplay=1&muted=1&loop=1" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div><span class="mod-orbit"></span><div class="mod-n">04</div><span class="mod-icon">☀️</span><div class="mod-name">Orientación solar</div><div class="mod-desc">Iluminación y asoleamiento hora a hora. Valor técnico explicado sin fricción.</div></div>
-      <div class="mod-card js-up"><div class="mod-card-video"><iframe src="https://player.vimeo.com/video/1195425262?h=2cc44c1535&background=1&autoplay=1&muted=1&loop=1" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div><span class="mod-orbit"></span><div class="mod-n">05</div><span class="mod-icon">🏢</span><div class="mod-name">Buscador de unidades</div><div class="mod-desc">Precio, m², disponibilidad y renders de tipologías en un solo flujo comercial.</div></div>
-      <div class="mod-card js-up"><div class="mod-card-video"><iframe src="https://player.vimeo.com/video/1195425171?h=3cec26a90d&background=1&autoplay=1&muted=1&loop=1" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div><span class="mod-orbit"></span><div class="mod-n">06</div><span class="mod-icon">💰</span><div class="mod-name">Simulador financiero</div><div class="mod-desc">Enganche, plazo, mensualidad. De la duda al número en tiempo real.</div></div>
-      <div class="mod-card js-up"><div class="mod-card-video"><iframe src="https://player.vimeo.com/video/1195424925?h=3ab8de4c94&background=1&autoplay=1&muted=1&loop=1" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div><span class="mod-orbit"></span><div class="mod-n">07</div><span class="mod-icon">🧩</span><div class="mod-name">Amenidades</div><div class="mod-desc">Pool, lobby, gym y rooftop con su propio recorrido 3D — el lifestyle que vende el proyecto.</div></div>
-      <div class="mod-card js-up"><div class="mod-card-video"><iframe src="https://player.vimeo.com/video/1195424656?h=deb41dae85&background=1&autoplay=1&muted=1&loop=1" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div><span class="mod-orbit"></span><div class="mod-n">08</div><span class="mod-icon">⬤</span><div class="mod-name">Burbujas 360°</div><div class="mod-desc">Exploración inmersiva del interior. Inmersión total, confianza desde el primer clic.</div></div>
-      <div class="mod-card js-up"><div class="mod-card-video"><iframe src="https://player.vimeo.com/video/1195424235?h=24f6d9b59d&background=1&autoplay=1&muted=1&loop=1" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div><span class="mod-orbit"></span><div class="mod-n">09</div><span class="mod-icon">🗺️</span><div class="mod-name">Topografía real</div><div class="mod-desc">Tu proyecto contextualizado geoespacialmente. El entorno como ventaja competitiva.</div></div>
+      <div class="mod-card js-up"><div class="mod-card-video"><iframe data-src="https://player.vimeo.com/video/1195424235?h=24f6d9b59d&background=1&autoplay=1&muted=1&loop=1" loading="lazy" title="Video: Recorrido 3D" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div><span class="mod-orbit"></span><div class="mod-n">01</div><span class="mod-icon">🏗️</span><div class="mod-name">Recorrido 3D</div><div class="mod-desc">Primera persona o orbital, directo en el navegador. El proyecto vivo desde el día uno.</div></div>
+      <div class="mod-card js-up"><div class="mod-card-video"><iframe data-src="https://player.vimeo.com/video/1195424656?h=deb41dae85&background=1&autoplay=1&muted=1&loop=1" loading="lazy" title="Video: Galería visual" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div><span class="mod-orbit"></span><div class="mod-n">02</div><span class="mod-icon">🖼️</span><div class="mod-name">Galería visual</div><div class="mod-desc">Renders, interiores y material hero para construir deseo desde la primera impresión.</div></div>
+      <div class="mod-card js-up"><div class="mod-card-video"><iframe data-src="https://player.vimeo.com/video/1195424925?h=3ab8de4c94&background=1&autoplay=1&muted=1&loop=1" loading="lazy" title="Video: Entorno urbano" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div><span class="mod-orbit"></span><div class="mod-n">03</div><span class="mod-icon">🌍</span><div class="mod-name">Entorno urbano</div><div class="mod-desc">POIs, rutas de acceso y contexto geoespacial real alrededor del proyecto.</div></div>
+      <div class="mod-card js-up"><div class="mod-card-video"><iframe data-src="https://player.vimeo.com/video/1195425171?h=3cec26a90d&background=1&autoplay=1&muted=1&loop=1" loading="lazy" title="Video: Orientación solar" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div><span class="mod-orbit"></span><div class="mod-n">04</div><span class="mod-icon">☀️</span><div class="mod-name">Orientación solar</div><div class="mod-desc">Iluminación y asoleamiento hora a hora. Valor técnico explicado sin fricción.</div></div>
+      <div class="mod-card js-up"><div class="mod-card-video"><iframe data-src="https://player.vimeo.com/video/1195425262?h=2cc44c1535&background=1&autoplay=1&muted=1&loop=1" loading="lazy" title="Video: Buscador de unidades" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div><span class="mod-orbit"></span><div class="mod-n">05</div><span class="mod-icon">🏢</span><div class="mod-name">Buscador de unidades</div><div class="mod-desc">Precio, m², disponibilidad y renders de tipologías en un solo flujo comercial.</div></div>
+      <div class="mod-card js-up"><div class="mod-card-video"><iframe data-src="https://player.vimeo.com/video/1195425171?h=3cec26a90d&background=1&autoplay=1&muted=1&loop=1" loading="lazy" title="Video: Simulador financiero" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div><span class="mod-orbit"></span><div class="mod-n">06</div><span class="mod-icon">💰</span><div class="mod-name">Simulador financiero</div><div class="mod-desc">Enganche, plazo, mensualidad. De la duda al número en tiempo real.</div></div>
+      <div class="mod-card js-up"><div class="mod-card-video"><iframe data-src="https://player.vimeo.com/video/1195424925?h=3ab8de4c94&background=1&autoplay=1&muted=1&loop=1" loading="lazy" title="Video: Amenidades" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div><span class="mod-orbit"></span><div class="mod-n">07</div><span class="mod-icon">🧩</span><div class="mod-name">Amenidades</div><div class="mod-desc">Pool, lobby, gym y rooftop con su propio recorrido 3D — el lifestyle que vende el proyecto.</div></div>
+      <div class="mod-card js-up"><div class="mod-card-video"><iframe data-src="https://player.vimeo.com/video/1195424656?h=deb41dae85&background=1&autoplay=1&muted=1&loop=1" loading="lazy" title="Video: Burbujas 360°" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div><span class="mod-orbit"></span><div class="mod-n">08</div><span class="mod-icon">⬤</span><div class="mod-name">Burbujas 360°</div><div class="mod-desc">Exploración inmersiva del interior. Inmersión total, confianza desde el primer clic.</div></div>
+      <div class="mod-card js-up"><div class="mod-card-video"><iframe data-src="https://player.vimeo.com/video/1195424235?h=24f6d9b59d&background=1&autoplay=1&muted=1&loop=1" loading="lazy" title="Video: Topografía real" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div><span class="mod-orbit"></span><div class="mod-n">09</div><span class="mod-icon">🗺️</span><div class="mod-name">Topografía real</div><div class="mod-desc">Tu proyecto contextualizado geoespacialmente. El entorno como ventaja competitiva.</div></div>
     </div>
   </div>
 </section>
 
+
+<!-- ── FAQ ── -->
+<section class="section" id="s-faq">
+  <div class="wrap">
+    <p class="tag js-up">Preguntas frecuentes</p>
+    <h2 class="big-title js-up">Lo que todo<br/>desarrollador<br/><em>pregunta.</em></h2>
+    <div class="faq-list js-up">
+      <details class="faq-item">
+        <summary>¿Qué es una maqueta virtual interactiva?</summary>
+        <p class="faq-a">Es una experiencia 3D en tiempo real de tu desarrollo inmobiliario, construida en Unreal Engine 5. El comprador recorre el proyecto, consulta unidades disponibles, simula mensualidades y explora amenidades — todo desde el navegador, antes de que exista el edificio.</p>
+      </details>
+      <details class="faq-item">
+        <summary>¿Mis clientes necesitan instalar algo?</summary>
+        <p class="faq-a">No. La plataforma corre 100% en el navegador, en computadora, tablet o celular. Solo compartes un link — ideal para compradores remotos o extranjeros que deciden a distancia.</p>
+      </details>
+      <details class="faq-item">
+        <summary>¿Cuánto tarda en estar lista?</summary>
+        <p class="faq-a">Entre 3 y 5 semanas según el alcance del proyecto. Trabajamos por fases para que tengas material comercial utilizable desde las primeras semanas.</p>
+      </details>
+      <details class="faq-item">
+        <summary>¿Qué necesito entregar de mi proyecto?</summary>
+        <p class="faq-a">Planos arquitectónicos, renders o modelo 3D si existe, lista de unidades con precios y el material de marca. Con eso construimos toda la experiencia.</p>
+      </details>
+      <details class="faq-item">
+        <summary>¿Sirve para preventa?</summary>
+        <p class="faq-a">Es su caso de uso ideal. La preventa es donde más cuesta vender algo que no existe — la maqueta virtual hace tangible el proyecto y reduce la fricción de decisión del comprador.</p>
+      </details>
+      <details class="faq-item">
+        <summary>¿El buscador de unidades se actualiza con mi inventario?</summary>
+        <p class="faq-a">Sí. Disponibilidad, precios y estatus de cada unidad se mantienen actualizados, para que la plataforma siempre refleje tu inventario real durante la venta.</p>
+      </details>
+    </div>
+  </div>
+</section>
 
 <!-- ── CTA ── -->
 <section class="section" id="s-cta">
@@ -2076,11 +2210,16 @@ content="https://res.cloudinary.com/dodxcdg1k/image/upload/v1778189014/archverse
       Haz que tu<br/>proyecto se<br/><em>sienta real.</em>
     </h2>
     <div class="cta-row js-up">
-      <a href="https://wa.me/526691011144?text=Hola%2C%20me%20interesa%20ArchVerse%20y%20quiero%20m%C3%A1s%20info" target="_blank" class="btn-acid">WhatsApp →</a>
+      <a href="https://wa.me/526691011144?text=Hola%2C%20me%20interesa%20ArchVerse%20y%20quiero%20m%C3%A1s%20info" target="_blank" rel="noopener" class="btn-acid">WhatsApp →</a>
       <a href="#" class="btn-acid btn-ghost js-open-calendar" id="scheduleCta">Agendar cita</a>
     </div>
   </div>
 </section>
+
+<!-- WHATSAPP FLOTANTE -->
+<a class="wa-float" href="https://wa.me/526691011144?text=Hola%2C%20me%20interesa%20ArchVerse%20y%20quiero%20m%C3%A1s%20info" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.6 0-3.1-.4-4.4-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.6-6.1c-.3-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.3-.6.8-.8 1-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-2-1.2 7.4 7.4 0 0 1-1.4-1.7c-.1-.3 0-.4.1-.5l.4-.5c.1-.2.2-.3.3-.5 0-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.1s.9 2.4 1 2.6c.1.2 1.8 2.8 4.4 3.9.6.3 1.1.4 1.5.5.6.2 1.2.2 1.6.1.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.2-.2-.5-.3z"/></svg>
+</a>
 
 <!-- FOOTER -->
 <footer>
@@ -2089,15 +2228,17 @@ content="https://res.cloudinary.com/dodxcdg1k/image/upload/v1778189014/archverse
       <div class="foot-logo">ArchVerse</div>
       <div class="foot-contact">
         <a href="mailto:ornelarq@gmail.com" class="foot-link">ornelarq@gmail.com</a>
-        <a href="tel:6691011144" class="foot-link">669 101 1144</a>
+        <a href="tel:+526691011144" class="foot-link">+52 669 101 1144</a>
         <a href="https://instagram.com/ojo_salado" class="foot-link">@ojo_salado</a>
-        <a href="https://linkedin.com/in/jesús-ornelas" class="foot-link">LinkedIn</a>
+        <a href="https://www.linkedin.com/in/jes%C3%BAs-ornelas" class="foot-link" rel="me">LinkedIn</a>
       </div>
       <div class="foot-copy">© 2026 · Mazatlán, Sinaloa, MX</div>
     </div>
   </div>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script>
 gsap.registerPlugin(ScrollTrigger);
 
@@ -2112,18 +2253,30 @@ gsap.registerPlugin(ScrollTrigger);
     num.textContent=Math.floor(v);
     bar.style.width=v+'%';
   },60);
-  window.addEventListener('load',()=>{
+  let booted=false;
+  function reveal(){
+    if(booted) return; booted=true;
     v=100;num.textContent=100;bar.style.width='100%';
     setTimeout(()=>{
       const tl=gsap.timeline({onComplete:boot});
       tl.to('#loader',{yPercent:-100,duration:1.1,ease:'expo.inOut'})
         .from('nav',{opacity:0,duration:.5},'-=.3');
     },300);
-  });
+  }
+  window.addEventListener('load',reveal);
+  setTimeout(reveal,5000); /* failsafe: no esperar a los iframes */
 })();
 
 /* ══ WEBGL NOISE BACKGROUND ══════════════ */
 (function(){
+  /* Ahorro de batería: sin shader de fondo en móvil / touch */
+  if(window.innerWidth<=900 || matchMedia('(pointer:coarse)').matches) return;
+  /* three.js (~150KB gzip) solo se descarga en desktop, sin bloquear nada */
+  const s=document.createElement('script');
+  s.src='https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+  s.onload=initGL;
+  document.head.appendChild(s);
+  function initGL(){
   const canvas=document.getElementById('gl');
   const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:false});
   renderer.setSize(window.innerWidth,window.innerHeight);
@@ -2188,23 +2341,39 @@ gsap.registerPlugin(ScrollTrigger);
   });
 
   let raf;
-  (function loop(t){
+  function loop(t){
     raf=requestAnimationFrame(loop);
     mat.uniforms.uTime.value=t*.001;
     mat.uniforms.uMouse.value.lerp(new THREE.Vector2(mx,my),.04);
     renderer.render(scene,cam);
-  })(0);
+  }
+  loop(0);
+  /* Pausar render cuando la pestaña no está visible */
+  document.addEventListener('visibilitychange',()=>{
+    if(document.hidden){ cancelAnimationFrame(raf); }
+    else{ loop(performance.now()); }
+  });
   setTimeout(()=>canvas.classList.add('vis'),800);
+  }
 })();
 
 /* ══ BOOT ════════════════════════════════ */
 function boot(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches){
+    gsap.set('#eyebrow,#hero-bot,.js-up,.js-fade',{opacity:1,y:0});
+    gsap.set('#h1 .word-inner',{y:'0%'});
+    initFeatures();
+    initModuleCards();
+    document.querySelectorAll('.js-count').forEach(el=>{
+      el.textContent=(el.dataset.pre||'')+el.dataset.val+(el.dataset.suf||'');
+    });
+    return;
+  }
   initCursor();
   initHero();
   initReveal();
   initFeatures();
   initCounters();
-  initNavSmooth();
   initModuleCards();
 }
 
@@ -2316,8 +2485,8 @@ function initFeatures(){
       if(iframe){
         try{
           iframe.contentWindow.postMessage(
-            JSON.stringify({event:'command',func:isActive?'playVideo':'pauseVideo',args:''}),
-            '*'
+            JSON.stringify({method:isActive?'play':'pause'}),
+            'https://player.vimeo.com'
           );
         }catch(e){}
       }
@@ -2383,6 +2552,10 @@ function initFeatures(){
 function initModuleCards(){
   const cards = document.querySelectorAll('.mod-card');
   cards.forEach(card=>{
+    card.addEventListener('mouseenter',()=>{
+      const fr = card.querySelector('.mod-card-video iframe[data-src]');
+      if(fr && !fr.src){ fr.src = fr.dataset.src; fr.removeAttribute('data-src'); }
+    },{once:false});
     card.addEventListener('mousemove',e=>{
       const rect = card.getBoundingClientRect();
       const x = ((e.clientX - rect.left) / rect.width) * 100;
@@ -2472,6 +2645,20 @@ function initCounters(){
   });
 }
 
+/* ══ LAZY LOAD DE IFRAMES DE FEATURES (desktop + móvil) ═════ */
+(function(){
+  const frames = document.querySelectorAll('.feat-img iframe[data-src], .fmob-video-box iframe[data-src]');
+  if(!frames.length) return;
+  const load = f => { if(!f.src && f.dataset.src){ f.src = f.dataset.src; f.removeAttribute('data-src'); } };
+  if(!('IntersectionObserver' in window)){ frames.forEach(load); return; }
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ load(e.target); obs.unobserve(e.target); }
+    });
+  },{rootMargin:'900px 0px'});
+  frames.forEach(f=>obs.observe(f));
+})();
+
 /* ══ MOBILE FEATURES VIDEO AUTOPLAY ═════════════════ */
 (function(){
   if(!('IntersectionObserver' in window)) return;
@@ -2504,37 +2691,48 @@ function initNavSmooth(){
     es:{
       lang:'EN', htmlLang:'es',
       navDemo:'Agendar cita →',
-      nav:['Por qué','Plataforma','Caso','Módulos'],
+      nav:['Por qué','Plataforma','Caso','Módulos','FAQ'],
       eyebrow:'↳ Plataforma inmersiva · Real estate · MX · 2026',
       h1:['Vende',' con','experiencia,','no con','renders.'],
       desc:'Tu comprador toma la decisión con lo que ve. ArchVerse convierte tu proyecto en una experiencia interactiva que vende antes de poner el primer ladrillo.',
       marquee:['Recorrido 3D','Orientación Solar','Buscador de Unidades','Simulador Financiero','Burbujas 360°','Entorno Urbano','Galería Media','Amenidades','Topografía Real'],
       whyTag:'Propuesta de valor',
-      whyTitle:'De "Se ve bien"<br/>a<br/><em>"Lo quiero!"</em>',
+      whyTitle:'De "Se ve bien"<br/>a<br/><em>"¡Lo quiero!"</em>',
       whyBody:'Ya no presentas un proyecto. Presentas una ventaja comercial que el comprador puede explorar, sentir y recordar. ArchVerse reemplaza renders sueltos, PDFs y explicaciones interminables con una sola experiencia inmersiva que guía la decisión — sin que tengas que estar ahí explicando.',
       stats:[['Menos tiempo explicando','Al centralizar renders, inventario, entorno y amenidades, el cliente encuentra respuestas más rápido.'],['Cierre más rápido','Una experiencia inmersiva reduce dudas y acelera la decisión cuando se combina con buen seguimiento.'],['Mejor conversión','Más claridad, más recordación y una percepción de valor más alta durante la presentación.']],
       features:[
-        ['Recorrido 3D en tiempo real','Primera persona, orbital o teletransporte. El comprador navega cada metro cuadrado antes de que el edificio exista — desde cualquier browser, sin instalar nada.','WebGL · Pixel Streaming'],
+        ['Recorrido 3D en tiempo real','Primera persona, orbital o teletransporte. El comprador navega cada metro cuadrado antes de que el edificio exista — desde cualquier navegador, sin instalar nada.','WebGL · Pixel Streaming'],
         ['Galería + Burbujas 360°','Material hero, interiores y exploración inmersiva de espacios. La primera impresión que construye deseo antes de la visita física.','360° · Renders'],
-        ['Entorno urbano + Topografía','Puntos de interés, accesos y contexto geoespacial real. Convierte la ubicación en un argumento de venta, no solo en un dato técnico.','Topografia · Real'],
+        ['Entorno urbano + Topografía','Puntos de interés, accesos y contexto geoespacial real. Convierte la ubicación en un argumento de venta, no solo en un dato técnico.','Topografía · Real'],
         ['Buscador de unidades + Finanzas','Disponibilidad, precio, m² y simulador de mensualidades dentro del mismo flujo. Del interés al número en segundos.','CRM Live · Finanzas'],
         ['Solar + Amenidades','Orientación lumínica hora a hora y amenidades con su propio recorrido 3D. No muestras características: haces que el comprador se proyecte viviendo ahí.','Sun Study · Lifestyle']
       ],
-      impactLabel:'Impacto real · Estimado · MX',
-      impactTitle:'Resultados que<br/>mueven el pipeline.',
-      impactStats:['Integrados en<br/>una sola plataforma','En browser,<br/>sin instalar nada','Más valor percibido<br/>del proyecto','Mantenimiento<br/>de la plataforma'],
-      impactUnits:['módulos','','',''],
+      impactLabel:'Impacto comercial · MX',
+      impactTitle:'Una plataforma que<br/>mueve el pipeline.',
+      impactStats:['Integrados en<br/>una sola plataforma','En navegador,<br/>sin instalar nada','Para compartir todo<br/>tu proyecto','Tu proyecto disponible<br/>a cualquier hora'],
+      impactUnits:['módulos','link'],
       caseTag:'Caso ejemplo · Residencial premium',
       caseTitle:'Una experiencia,<br/><em>un cierre.</em>',
       caseBefore:'Antes: renders sueltos, PDF, Excel, discurso fragmentado',
       quote:'"No te estoy vendiendo renders. Te estoy proponiendo una plataforma que transforma cómo tus clientes viven tu proyecto — y cómo deciden comprarlo."',
       caseRows:['Más valor percibido<br/>del proyecto','Más tiempo de calidad<br/>con cada prospecto','Para tener tu plataforma<br/>lista para vender'],
+      caseAuthor:'Jesús Ornelas · Fundador, ArchVerse',
       caseCTA:'Quiero esto para mi proyecto',
       modulesTag:'Plataforma completa',
       modulesTitle:'9 módulos.<br/><em>Un argumento.</em>',
       modulesSub:'Cada módulo diseñado para llevar al comprador de la curiosidad a la firma.',
       modules:[
-        ['Recorrido 3D','Primera persona o orbital — sin instalar nada. El proyecto vivo desde el día uno.'],['Galería visual','Renders, interiores y material hero para construir deseo desde la primera impresión.'],['Entorno urbano','POIs, accesos y contexto geoespacial. La ubicación como argumento, no como dato.'],['Orientación solar','Iluminación y asoleamiento hora a hora. Valor técnico explicado sin fricción.'],['Buscador de unidades','Precio, m², disponibilidad y renders de tipologías en un solo flujo comercial.'],['Simulador financiero','Enganche, plazo, mensualidad. De la duda al número en tiempo real.'],['Amenidades','No muestras amenidades: haces que el comprador se proyecte viviendo ahí.'],['Burbujas 360°','Exploración inmersiva del interior. Inmersión total, confianza desde el primer clic.'],['Topografía real','Tu proyecto contextualizado geoespacialmente. El entorno como ventaja competitiva.']
+        ['Recorrido 3D','Primera persona o orbital, directo en el navegador. El proyecto vivo desde el día uno.'],['Galería visual','Renders, interiores y material hero para construir deseo desde la primera impresión.'],['Entorno urbano','POIs, rutas de acceso y contexto geoespacial real alrededor del proyecto.'],['Orientación solar','Iluminación y asoleamiento hora a hora. Valor técnico explicado sin fricción.'],['Buscador de unidades','Precio, m², disponibilidad y renders de tipologías en un solo flujo comercial.'],['Simulador financiero','Enganche, plazo, mensualidad. De la duda al número en tiempo real.'],['Amenidades','Pool, lobby, gym y rooftop con su propio recorrido 3D — el lifestyle que vende el proyecto.'],['Burbujas 360°','Exploración inmersiva del interior. Inmersión total, confianza desde el primer clic.'],['Topografía real','Tu proyecto contextualizado geoespacialmente. El entorno como ventaja competitiva.']
+      ],
+      faqTag:'Preguntas frecuentes',
+      faqTitle:'Lo que todo<br/>desarrollador<br/><em>pregunta.</em>',
+      faqs:[
+        ['¿Qué es una maqueta virtual interactiva?','Es una experiencia 3D en tiempo real de tu desarrollo inmobiliario, construida en Unreal Engine 5. El comprador recorre el proyecto, consulta unidades disponibles, simula mensualidades y explora amenidades — todo desde el navegador, antes de que exista el edificio.'],
+        ['¿Mis clientes necesitan instalar algo?','No. La plataforma corre 100% en el navegador, en computadora, tablet o celular. Solo compartes un link — ideal para compradores remotos o extranjeros que deciden a distancia.'],
+        ['¿Cuánto tarda en estar lista?','Entre 3 y 5 semanas según el alcance del proyecto. Trabajamos por fases para que tengas material comercial utilizable desde las primeras semanas.'],
+        ['¿Qué necesito entregar de mi proyecto?','Planos arquitectónicos, renders o modelo 3D si existe, lista de unidades con precios y el material de marca. Con eso construimos toda la experiencia.'],
+        ['¿Sirve para preventa?','Es su caso de uso ideal. La preventa es donde más cuesta vender algo que no existe — la maqueta virtual hace tangible el proyecto y reduce la fricción de decisión del comprador.'],
+        ['¿El buscador de unidades se actualiza con mi inventario?','Sí. Disponibilidad, precios y estatus de cada unidad se mantienen actualizados, para que la plataforma siempre refleje tu inventario real durante la venta.']
       ],
       ctaMono:'Cada semana sin esto, tu competencia avanza.',
       ctaTitle:'Haz que tu<br/>proyecto se<br/><em>sienta real.</em>',
@@ -2543,7 +2741,7 @@ function initNavSmooth(){
     en:{
       lang:'ES', htmlLang:'en',
       navDemo:'Agendar cita →',
-      nav:['Why','Platform','Case','Modules'],
+      nav:['Why','Platform','Case','Modules','FAQ'],
       eyebrow:'↳ Immersive platform · Real estate · MX · 2026',
       h1:['Sell',' with','experience,','not with','renders.'],
       desc:'ArchVerse transforms real estate developments into interactive platforms that reduce friction, increase perceived value, and accelerate closing.',
@@ -2555,27 +2753,38 @@ function initNavSmooth(){
       features:[
         ['Real-time 3D tour','First-person, orbit, or teleport navigation. Buyers explore every square meter before the building exists — from any browser, no installation required.','WebGL · Pixel Streaming'],
         ['Gallery + 360° bubbles','Hero visuals, interiors, and immersive spatial exploration. A first impression that builds desire before the physical visit.','360° · Renders'],
-        ['Urban context + Topography','Points of interest, access routes, and real geospatial context. The location becomes a sales argument, not just technical data.','Topografia · Real'],
+        ['Urban context + Topography','Points of interest, access routes, and real geospatial context. The location becomes a sales argument, not just technical data.','Real Topography'],
         ['Unit finder + Finance','Availability, price, square meters, and monthly payment simulation in the same flow. From interest to numbers in seconds.','Live CRM · Finance'],
         ['Solar + Amenities','Hour-by-hour lighting and amenities with their own 3D experience. You do not show features — you help buyers imagine living there.','Sun Study · Lifestyle']
       ],
-      impactLabel:'Real impact · Estimated · MX',
-      impactTitle:'Results that<br/>move the pipeline.',
-      impactStats:['Integrated in<br/>one single platform','In browser,<br/>no install needed','More perceived<br/>project value','Platform<br/>maintenance'],
-      impactUnits:['modules','','',''],
+      impactLabel:'Commercial impact · MX',
+      impactTitle:'One platform that<br/>moves the pipeline.',
+      impactStats:['Integrated in<br/>one single platform','In browser,<br/>no install needed','To share your<br/>entire project','Your project available<br/>around the clock'],
+      impactUnits:['modules','link'],
       caseTag:'Example case · Premium residential',
       caseTitle:'One experience,<br/><em>one closing.</em>',
       caseBefore:'Before: loose renders, PDF, Excel, fragmented pitch',
-      quote:'"I am not proposing just a visualization. I am proposing a platform to sell your project better, with more clarity for the client and a much more premium commercial experience."',
+      quote:'"I am not selling you renders. I am proposing a platform that transforms how your clients experience your project — and how they decide to buy it."',
       caseRows:['Higher perceived<br/>project value','More quality time<br/>with each prospect','To get your platform<br/>ready to sell'],
+      caseAuthor:'Jesús Ornelas · Founder, ArchVerse',
       caseCTA:'I want this for my project',
       modulesTag:'Complete platform',
       modulesTitle:'9 modules.<br/><em>One argument.</em>',
       modulesSub:'Each module is designed to move buyers from curiosity to signing.',
       modules:[
-        ['3D Tour','First-person or orbit mode — no installation required. The project alive from day one.'],['Visual Gallery','Renders, interiors, and hero content to build desire from the first impression.'],['Urban Context','POIs, access routes, and geospatial context. Location as an argument, not just data.'],['Solar Orientation','Hour-by-hour lighting and sun exposure. Technical value explained without friction.'],['Unit Finder','Price, square meters, availability, and typology renders in one commercial flow.'],['Financial Simulator','Down payment, term, monthly payment. From doubt to numbers in real time.'],['Amenities','You do not show amenities: you help the buyer picture living there.'],['360° Bubbles','Immersive interior exploration. Full immersion and trust from the first click.'],['Real Topography','Your project contextualized geospatially. The environment as a competitive edge.']
+        ['3D Tour','First-person or orbit mode, right in the browser. The project alive from day one.'],['Visual Gallery','Renders, interiors, and hero content to build desire from the first impression.'],['Urban Context','POIs, access routes, and real geospatial context around the project.'],['Solar Orientation','Hour-by-hour lighting and sun exposure. Technical value explained without friction.'],['Unit Finder','Price, square meters, availability, and typology renders in one commercial flow.'],['Financial Simulator','Down payment, term, monthly payment. From doubt to numbers in real time.'],['Amenities','Pool, lobby, gym, and rooftop with their own 3D tour — the lifestyle that sells the project.'],['360° Bubbles','Immersive interior exploration. Full immersion and trust from the first click.'],['Real Topography','Your project contextualized geospatially. The environment as a competitive edge.']
       ],
-      ctaMono:'Ready to sell differently?',
+      faqTag:'Frequently asked questions',
+      faqTitle:'What every<br/>developer<br/><em>asks.</em>',
+      faqs:[
+        ['What is an interactive virtual model?','A real-time 3D experience of your real estate development, built in Unreal Engine 5. Buyers tour the project, check available units, simulate monthly payments, and explore amenities — all from the browser, before the building exists.'],
+        ['Do my clients need to install anything?','No. The platform runs 100% in the browser — desktop, tablet, or phone. You just share a link, ideal for remote or international buyers.'],
+        ['How long does it take?','Between 3 and 5 weeks depending on project scope. We work in phases so you have usable sales material from the first weeks.'],
+        ['What do I need to provide?','Architectural plans, renders or a 3D model if available, a unit list with pricing, and your brand assets. We build the entire experience from that.'],
+        ['Does it work for pre-sales?','It is the ideal use case. Pre-sales is where selling something that does not exist is hardest — the virtual model makes the project tangible and reduces buyer friction.'],
+        ['Does the unit finder sync with my inventory?','Yes. Availability, pricing, and unit status stay up to date so the platform always reflects your real inventory during the sales process.']
+      ],
+      ctaMono:'Every week without this, your competition moves ahead.',
       ctaTitle:'Present your<br/>development as<br/><em>an experience.</em>',
       ctaBtns:['Write me →','Schedule meeting']
     }
@@ -2611,9 +2820,13 @@ function initNavSmooth(){
     const caseTitle=$('.case-big'); if(caseTitle) caseTitle.innerHTML=t.caseTitle;
     const caseBefore=$('.case-tag-label'); if(caseBefore) caseBefore.textContent=t.caseBefore;
     const quote=$('.case-quote'); if(quote) quote.textContent=t.quote;
+    const qa=$('.case-quote-author'); if(qa && t.caseAuthor) qa.textContent=t.caseAuthor;
     $$('.c-label').forEach((el,i)=>{ if(t.caseRows[i]) el.innerHTML=t.caseRows[i]; });
     const caseCTA=$('.case-cta'); if(caseCTA && caseCTA.childNodes[0]) caseCTA.childNodes[0].textContent=t.caseCTA+' ';
     if(tags[2]) tags[2].textContent=t.modulesTag;
+    if(tags[3]) tags[3].textContent=t.faqTag;
+    const faqTitle=$('#s-faq .big-title'); if(faqTitle) faqTitle.innerHTML=t.faqTitle;
+    $$('.faq-item').forEach((el,i)=>{ if(t.faqs && t.faqs[i]){ el.querySelector('summary').textContent=t.faqs[i][0]; el.querySelector('.faq-a').textContent=t.faqs[i][1]; }});
     const modTitle=$('#s-modules .big-title'); if(modTitle) modTitle.innerHTML=t.modulesTitle;
     const modSub=$('.mod-sub'); if(modSub) modSub.textContent=t.modulesSub;
     $$('.mod-card').forEach((el,i)=>{ if(t.modules[i]){ el.querySelector('.mod-name').textContent=t.modules[i][0]; el.querySelector('.mod-desc').textContent=t.modules[i][1]; }});
@@ -2651,12 +2864,18 @@ function initNavSmooth(){
   const modal = document.getElementById('appointmentModal');
   const closeBtn = document.getElementById('appointmentClose');
 
+  const frame = document.getElementById('appointmentFrame');
+  let lastFocus = null;
+
   function openCalendar(e){
     if(e) e.preventDefault();
     if(!modal) return;
+    if(frame && !frame.src && frame.dataset.src) frame.src = frame.dataset.src;
+    lastFocus = document.activeElement;
     modal.classList.add('is-open');
     modal.setAttribute('aria-hidden','false');
     document.body.style.overflow = 'hidden';
+    if(closeBtn) closeBtn.focus();
   }
 
   function closeCalendar(){
@@ -2664,6 +2883,7 @@ function initNavSmooth(){
     modal.classList.remove('is-open');
     modal.setAttribute('aria-hidden','true');
     document.body.style.overflow = '';
+    if(lastFocus && lastFocus.focus) lastFocus.focus();
   }
 
   document.addEventListener('click', function(e){
